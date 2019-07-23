@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    font-family: 나눔고딕;
+}
+
+h4{
+    margin: 0px;
+    padding: 15px 32px;
+    color: lightgray;
+}
+
+button {
+    background-color: tomato;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+}
+
+.header{
+    display: flex;
+    justify-content: center;
+    background-color: #263035;
+    height: 50px;
+}
+
+.tmp_title{
+    display: flex;
+    justify-content: center;
+}
+
+.stt_result{
+    display: flex;
+    justify-content: center;
+    height: 500px;
+}
+
+.stt_text_box{
+    display: flex;
+    justify-content: center;
+    border: solid #263035;
+    width: 500px;
+}
+
+.audio_player{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.botton_list{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
