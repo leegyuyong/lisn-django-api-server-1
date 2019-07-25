@@ -58,10 +58,10 @@ li {
     padding: 50px 400px;
 }
 
-#new_note_btn {
-    margin-top: 200px;
-    margin-right: 100px;
-    padding: 20px 80px;
+#create_note_btn {
+    margin-top: 240px;
+    margin-right: 20px;
+    padding: 20px 60px;
 }
 
 #my_list_title {
