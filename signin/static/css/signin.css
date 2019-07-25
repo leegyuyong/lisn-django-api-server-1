@@ -1,0 +1,14 @@
+body {
+    background-color: white;
+}
+
+#oauth_btn {
+    margin-top: 40%;
+    padding: 2%;
+}
+
+#google_icon {
+    height: 20px;
+    margin-right: 5px;
+    margin-bottom: 3px;
+}

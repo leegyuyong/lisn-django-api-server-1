@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from django.conf import settings
 from pydub import AudioSegment #ffmpeg must be installed in os.
 
+def mylist_html(request):
+    return render(request, 'record/mylist.html', {})
+
+def note_html(request):
+    return render(request, 'record/note.html', {})
+
 def speech_to_text(filename):
     from google.cloud import speech
     from google.cloud.speech import enums
@@ -43,10 +49,7 @@ def webm_to_flac(filename):
     audio = AudioSegment.from_file(input_path, format='webm')
     audio.export(output_path, format='flac')
 
-def index_html(request):
-    return render(request, 'record/index.html', {})
-
-def save_record_and_response_stt_text(request):
+def audio_stt(request):
     data = request.FILES['data']
     fs = FileSystemStorage()
     fs.save(data.name + '.webm', data)

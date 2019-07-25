@@ -1,0 +1,18 @@
+body {
+    background-color: black;
+}
+
+.jumbotron {
+    background-image: url('../img/mountain.jpg');
+    background-size: cover;
+    clear: white;
+}
+
+#welcome-message {
+    padding-top: 20%;
+    padding-bottom: 20%;
+}
+
+#start_btn {
+    margin-top: 20px;
+}
