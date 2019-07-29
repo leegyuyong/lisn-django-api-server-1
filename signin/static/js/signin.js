@@ -5,5 +5,11 @@ home_btn.onclick = function() {
     location.href = "/";
 }
 oauth_btn.onclick = function() {
-    location.href = "/record/mylist";
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/record/mylist');
+    xhr.send();
+    xhr.onload = function() {
+        var res = JSON.parse(xhr.responseText);
+        location.href = res.url;
+    };
 }

@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('mylist', views.mylist_html, name='mylist_html'),
-    path('note', views.note_html, name='note_html'),
-    path('audio', views.audio_stt, name='audio_stt'),
+    path('mylist', views.get_mylist_page, name='get_mylist_page'),
+    path('note', views.manipulate_note, name='manipulate_note'),
+    path('audio', views.audio_file_save, name='audio_file_save'),
 ]

@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
 
-def signin_html(request):
-    return render(request, 'signin/signin.html', {})
+def get_signin_page(request):
+    return JsonResponse({
+        'url' : '/static/signin.html'
+    })
