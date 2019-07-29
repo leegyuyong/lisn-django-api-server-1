@@ -12,8 +12,9 @@ recognition.lang = 'ko-KR';
 recognition.maxAlternatives = 1;
 
 var audio_start_time;
-var is_first_word;
 var word_idx = 0;
+var is_first_word;
+var prev;
 var continuous;
 
 var startRecording = function(stream) {
@@ -23,6 +24,7 @@ var startRecording = function(stream) {
 
     recognition.onstart = function() {
        is_first_word = true;
+       prev = -1;
        continuous = true;
     };
 
@@ -46,6 +48,7 @@ var startRecording = function(stream) {
             audio_stt_result.style.color = '#000000';
             is_first_word = true;
             word_idx++;
+            prev = last;
         }
         else {
             if(is_first_word == true) {
@@ -63,7 +66,12 @@ var startRecording = function(stream) {
             }
             else {
                 var audio_stt_result = document.getElementById('w' + word_idx);
-                audio_stt_result.textContent = transcript;
+                var text_tmp = '';
+                for(var i = prev + 1; i < last; i++) {
+                    text_tmp += e.results[i][0].transcript;
+                }
+                if(audio_stt_result.textContent != text_tmp)
+                    audio_stt_result.textContent = text_tmp;
             }
         }
         //console.log(e.results);
