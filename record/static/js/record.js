@@ -56,13 +56,14 @@ var startRecording = function(stream) {
                 console.log(word_start_time);
                 is_first_word = false;
 
-                var audio_stt_result = document.createElement('h3');
+                var audio_stt_result = document.createElement('h4');
+                var newline = document.createElement('hr');
                 audio_stt_result.id = 'w' + word_idx;
                 audio_stt_result.className = "audio_stt_result";
                 audio_stt_result.textContent = transcript;
                 audio_stt_result.style.color = '#666666';
-                audio_stt_result.style.backgroundColor = '#FFFFCC';
                 audio_stt_result_list.appendChild(audio_stt_result);
+                audio_stt_result_list.appendChild(newline);
             }
             else {
                 var audio_stt_result = document.getElementById('w' + word_idx);

@@ -62,6 +62,7 @@ li {
     border: #343a40;
     margin: 3% 5%;
     height: 75%;
+    overflow: auto;
 }
 
 .audio_stt_result {
