@@ -8,23 +8,11 @@ signout_btn.onclick = function() {
 }
 
 create_note_btn.onclick = function() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/record/note');
-    xhr.send();
-    xhr.onload = function() {
-        var res = JSON.parse(xhr.responseText);
-        location.href = res.url;
-    };
+    location.href = "/static/note.html";
 };
 
 for(var i = 0; i < note_btn.length; i++) {
     note_btn[i].onclick = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/record/note');
-        xhr.send();
-        xhr.onload = function() {
-            var res = JSON.parse(xhr.responseText);
-            location.href = res.url;
-        };
+        location.href = "/static/note.html";
     };
 }
