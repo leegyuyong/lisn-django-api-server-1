@@ -54,8 +54,8 @@ var startRecording = function(stream) {
             if(is_first_word == true) {
                 var word_start_time = Date.now() - audio_start_time;
                 console.log(word_start_time);
-                is_first_word = false;
 
+                is_first_word = false;
                 var audio_stt_result = document.createElement('h4');
                 var newline = document.createElement('hr');
                 audio_stt_result.id = 'w' + word_idx;
@@ -78,6 +78,10 @@ var startRecording = function(stream) {
         //console.log(e.results);
     };
 
+    recorder.onstart = function() {
+        audio_start_time = Date.now();
+    };
+
     recorder.ondataavailable = function(e) {
         chunks.push(e.data);
     };
@@ -86,7 +90,6 @@ var startRecording = function(stream) {
         sendRecording();
     };
 
-    audio_start_time = Date.now();
     recorder.start();
     recognition.start();
 };
