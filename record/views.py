@@ -51,7 +51,7 @@ def get_list(request):
             json_res['user_id'] = user_id
             json_res['notes'] = []
 
-            notes = Note.objects.filter(user_id=user_id)
+            notes = Note.objects.filter(user_id=user_id).order_by('created_at')
             for note in notes:
                 json_res['notes'].append({
                     'note_id': note.id,
@@ -66,6 +66,16 @@ def get_list(request):
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)
+
+def delete_audio_files(note_id):
+    audios = Audio.objects.filter(note_id=note_id)
+    for audio in audios:
+        sentences = Sentence.objects.filter(audio_id=audio.id)
+        for sentence in sentences:
+            if os.path.exists(sentence.data_url):
+                os.remove(sentence.data_url)
+        if os.path.exists(audio.data_url):
+            os.remove(audio.data_url)
 
 def manipulate_note(request):
     try:
@@ -82,12 +92,12 @@ def manipulate_note(request):
             json_res['content'] = note.content
             json_res['audios'] = []
 
-            audios = Audio.objects.filter(note_id=note_id)
+            audios = Audio.objects.filter(note_id=note_id).order_by('id')
             for audio in audios:
                 json_audio = dict()
                 json_audio['sentences'] = []
 
-                sentences = Sentence.objects.filter(audio_id=audio.id)
+                sentences = Sentence.objects.filter(audio_id=audio.id).order_by('index')
                 for sentence in sentences:
                     json_sentence = dict()
                     json_sentence['sentence_id'] = sentence.id
@@ -118,6 +128,7 @@ def manipulate_note(request):
             return JsonResponse(json_res, status=201)
         elif request.method == 'PUT':
             coerce_to_post(request)
+            title = str(request.PUT.get('title'))
             content = str(request.PUT.get('content'))
             note_id = int(request.PUT.get('note_id'))
             note = Note.objects.get(id=note_id)
@@ -126,6 +137,7 @@ def manipulate_note(request):
             if is_valid_auth(request, user_id) == False:
                 HttpResponse(status=400)
             """
+            note.title = title
             note.content = content
             note.updated_at = timezone.now()
             note.save()
@@ -140,7 +152,7 @@ def manipulate_note(request):
             if is_valid_auth(request, user_id) == False:
                 HttpResponse(status=400)
             """
-            #delete_audio_files(note)
+            delete_audio_files(note_id)
             note.delete()
             
             return HttpResponse(status=200)
@@ -170,10 +182,10 @@ def save_audio(request):
             )
 
             audio_id = audio.id
-            filename = str(user_id) + '/' + str(note_id) + '/' + str(audio_id)
-            data = request.FILES['data']
+            filename = str(user_id) + '_' + str(note_id) + '_' + str(audio_id)
+            audio_data = request.FILES['audio_data']
             fs = FileSystemStorage()
-            fs.save(filename + '.webm', data)
+            fs.save(filename + '.webm', audio_data)
             #webm_to_wav(filename)
             
             audio.data_url = settings.MEDIA_ROOT + '/' + filename + '.webm'
