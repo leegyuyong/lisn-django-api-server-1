@@ -30,8 +30,17 @@ var audio_start_time;
 var audio_timestamp = [];
 var tmp_id;
 var is_first_word;
-var prev;
 var continuous;
+
+var render_stt_text = function(e, id) {
+    var sentence_tag = document.getElementById(id);
+    var transcript = '';
+    for (var i = e.resultIndex; i < e.results.length; ++i) {
+        transcript += e.results[i][0].transcript;
+    }
+    sentence_tag.textContent = transcript;
+    sentence_tag.style.color = '#666666';
+};
 
 var startRecording = function(stream) {
 
@@ -40,7 +49,6 @@ var startRecording = function(stream) {
 
     recognition.onstart = function() {
        is_first_word = true;
-       prev = -1;
        tmp_id = 0;
        continuous = true;
     };
@@ -65,7 +73,6 @@ var startRecording = function(stream) {
             sentence_tag.style.color = '#000000';
             is_first_word = true;
             tmp_id++;
-            prev = last;
         }
         else {
             if(is_first_word == true) {
@@ -84,19 +91,12 @@ var startRecording = function(stream) {
                 var newline = document.createElement('hr');
                 sentence_tag.id = 'tmp_' + tmp_id;
                 sentence_tag.className = "audio_stt_result";
-                sentence_tag.textContent = transcript;
-                sentence_tag.style.color = '#666666';
                 sentence_list.appendChild(sentence_tag);
                 sentence_list.appendChild(newline);
+                render_stt_text(e, 'tmp_' + tmp_id);
             }
             else {
-                var sentence_tag = document.getElementById('tmp_' + tmp_id);
-                var text_tmp = '';
-                for(var i = prev + 1; i < last; i++) {
-                    text_tmp += e.results[i][0].transcript;
-                }
-                if(sentence_tag.textContent != text_tmp)
-                    sentence_tag.textContent = text_tmp;
+                render_stt_text(e, 'tmp_' + tmp_id);
             }
         }
         //console.log(e.results);
