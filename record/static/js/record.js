@@ -1,6 +1,21 @@
 var recordButton = document.getElementById('record_btn');
-var audio_stt_result_list = document.getElementById('audio_stt_result_list');
+var sentence_list = document.getElementById('audio_stt_result_list');
 var state_text = document.getElementById('state_text');
+
+var get_url_params = function() {
+    var params = []
+	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	for(var i=0; i<hashes.length; i++)
+	{
+	    var hash = hashes[i].split('=');
+	    params.push(hash[0]);
+	    params[hash[0]] = hash[1];
+	}
+	return params;
+};
+
+var params = get_url_params();
+var note_id = params['note_id'];
 
 var is_record = false;
 var recorder;
@@ -12,10 +27,20 @@ recognition.lang = 'ko-KR';
 recognition.maxAlternatives = 1;
 
 var audio_start_time;
-var word_idx = 0;
+var audio_timestamp = [];
+var tmp_id;
 var is_first_word;
-var prev;
 var continuous;
+
+var render_stt_text = function(e, id) {
+    var sentence_tag = document.getElementById(id);
+    var transcript = '';
+    for (var i = e.resultIndex; i < e.results.length; ++i) {
+        transcript += e.results[i][0].transcript;
+    }
+    sentence_tag.textContent = transcript;
+    sentence_tag.style.color = '#666666';
+};
 
 var startRecording = function(stream) {
 
@@ -24,14 +49,14 @@ var startRecording = function(stream) {
 
     recognition.onstart = function() {
        is_first_word = true;
-       prev = -1;
+       tmp_id = 0;
        continuous = true;
     };
 
     recognition.onend = function() {
         if(continuous == true) {
             recognition.start();
-            console.log('Recognition restart!');
+            //console.log('Recognition restart!');
         }
     }
 
@@ -43,36 +68,35 @@ var startRecording = function(stream) {
         }
 
         if(e.results[last].isFinal == true) {
-            var audio_stt_result = document.getElementById('w' + word_idx);
-            audio_stt_result.textContent = transcript;
-            audio_stt_result.style.color = '#000000';
+            var sentence_tag = document.getElementById('tmp_' + tmp_id);
+            sentence_tag.textContent = transcript;
+            sentence_tag.style.color = '#000000';
             is_first_word = true;
-            word_idx++;
-            prev = last;
+            tmp_id++;
         }
         else {
             if(is_first_word == true) {
                 var word_start_time = Date.now() - audio_start_time;
-                console.log(word_start_time);
+                if(word_start_time - 2300 > 0){
+                    word_start_time -= 2300;
+                }
+                else{
+                    word_start_time = 0;
+                }
+                audio_timestamp.push(word_start_time);
+                //console.log(word_start_time);
 
                 is_first_word = false;
-                var audio_stt_result = document.createElement('h4');
+                var sentence_tag = document.createElement('h4');
                 var newline = document.createElement('hr');
-                audio_stt_result.id = 'w' + word_idx;
-                audio_stt_result.className = "audio_stt_result";
-                audio_stt_result.textContent = transcript;
-                audio_stt_result.style.color = '#666666';
-                audio_stt_result_list.appendChild(audio_stt_result);
-                audio_stt_result_list.appendChild(newline);
+                sentence_tag.id = 'tmp_' + tmp_id;
+                sentence_tag.className = "audio_stt_result";
+                sentence_list.appendChild(sentence_tag);
+                sentence_list.appendChild(newline);
+                render_stt_text(e, 'tmp_' + tmp_id);
             }
             else {
-                var audio_stt_result = document.getElementById('w' + word_idx);
-                var text_tmp = '';
-                for(var i = prev + 1; i < last; i++) {
-                    text_tmp += e.results[i][0].transcript;
-                }
-                if(audio_stt_result.textContent != text_tmp)
-                    audio_stt_result.textContent = text_tmp;
+                render_stt_text(e, 'tmp_' + tmp_id);
             }
         }
         //console.log(e.results);
@@ -94,21 +118,75 @@ var startRecording = function(stream) {
     recognition.start();
 };
 
+var get_audio_and_play = function(sentence_id) {
+    window.AudioContext = window.AudioContext||window.webkitAudioContext||window.mozAudioContext;
+    var audio_context = new AudioContext();
+    var source = audio_context.createBufferSource();
+    var uri = '/record/sentence' + '?' + 'sentence_id=' + sentence_id;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', uri);
+    xhr.responseType = 'arraybuffer';
+    xhr.send();
+    xhr.onload = function() {
+        audio_context.decodeAudioData(xhr.response, function(buffer) {
+            source.buffer = buffer;
+            source.connect(audio_context.destination);
+            source.start(0);
+        }, null);
+    };
+};
+
+var post_record_sentence = function(formData, tmp_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/record/sentence');
+    xhr.send(formData);
+    xhr.onload = function() {
+        var sentence_id = JSON.parse(xhr.responseText)['sentence_id'];
+        var sentence_tag = document.getElementById(tmp_id);
+        sentence_tag.id = sentence_id;
+        sentence_tag.onclick = function(event) {
+            get_audio_and_play(event.target.id);
+        };
+    };
+};
+
 var sendRecording = function() {
     var blob = new Blob(chunks, {'type': 'audio/webm;'});
-    var fileName = Date.now();
-
     // clear chunks
     chunks = [];
 
-    var formData = new FormData();
-    formData.append('data', blob, fileName);
+    if(audio_timestamp.length == 0){
+        return;
+    }
 
+    var formData = new FormData();
+    formData.append('audio_data', blob, 'filename');
+    formData.append('note_id', note_id);
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/record/audio');
     xhr.send(formData);
     xhr.onload = function() {
-        console.log(xhr.responseText);
+        var audio_id = JSON.parse(xhr.responseText)['audio_id'];
+        audio_timestamp.push(-1);
+        for(var i=1; i<audio_timestamp.length; i++){
+            if(audio_timestamp[i] == audio_timestamp[i-1]){
+                audio_timestamp[i] = audio_timestamp[i-1]+1;
+            }
+            var started_at = audio_timestamp[i-1];
+            var ended_at = audio_timestamp[i];
+            var sentence_tag = document.getElementById('tmp_' + (i-1));
+            var content = sentence_tag.textContent;
+            
+            var formData = new FormData();
+            formData.append('index', (i-1));
+            formData.append('audio_id', audio_id);
+            formData.append('started_at', started_at);
+            formData.append('ended_at', ended_at);
+            formData.append('content', content);
+            post_record_sentence(formData, 'tmp_' + (i-1));
+        }
+
+        audio_timestamp = [];
     };
 };
 

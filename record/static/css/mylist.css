@@ -4,6 +4,7 @@ html, body {
 
 li {
     list-style: none;
+    display: inline;
 }
 
 #wrap {
@@ -54,8 +55,13 @@ li {
 }
 
 .note_btn {
-    margin: 20px;
-    padding: 50px 400px;
+    margin: 20px 2px;
+    padding: 50px 130px;
+}
+
+.del_btn {
+    margin: 20px 2px;
+    padding: 50px 50px;
 }
 
 #create_note_btn {
