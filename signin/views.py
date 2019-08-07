@@ -16,7 +16,7 @@ CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleuserconten
 
 def auth_validate_check(request, user_id):
     try:
-        auth_token = request.session['auth_token']
+        auth_token = request.COOKIES['auth_token']
         byte_auth_token = auth_token.encode('utf-8')
         payload = jwt.decode(byte_auth_token, JWT_SECRET_KEY, algorithm='HS256')
         if payload['user_id'] == user_id:
@@ -58,13 +58,14 @@ def signin(request):
             user.token = auth_token
             user.save()
 
-            request.session['auth_token'] = auth_token
-
             json_res = dict()
             json_res['redirect_url'] = '/mylist.html'
             json_res['user_id'] = user.id
 
-            return JsonResponse(json_res, status=201)
+            response = JsonResponse(json_res, status=201)
+            response.set_cookie('auth_token', auth_token, httponly=True)
+
+            return response
         else:
             return HttpResponse(status=405)
     except:
@@ -74,8 +75,9 @@ def signin(request):
 def delete_token(request):
     try:
         if request.method == 'DELETE':
-            request.session.flush()
-            return HttpResponse(status=200)
+            response = HttpResponse(status=200)
+            response.delete_cookie('auth_token')
+            return response
         else:
             return HttpResponse(status=405)
     except:
