@@ -59,12 +59,17 @@ xhr.onload = function() {
 };
 
 signout_btn.onclick = function() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    setCookie('glisn_user_id', -1, 365);
-    setCookie('glisn_note_id', -1, 365);
-    auth2.signOut();
-    auth2.disconnect();
-    location.href = "/";
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/signin/token');
+    xhr.send();
+    xhr.onload = function() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        setCookie('glisn_user_id', -1, 0);
+        setCookie('glisn_note_id', -1, 0);
+        auth2.signOut();
+        auth2.disconnect();
+        location.href = "/";
+    }
 };
 
 create_note_btn.onclick = function() {

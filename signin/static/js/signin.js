@@ -17,7 +17,7 @@ home_btn.onclick = function() {
 function onSignIn(googleUser) {
     var id_token = googleUser.getAuthResponse().id_token;
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/signin/oauth/google');
+    xhr.open('POST', '/signin/oauth/google/user');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
         redirect_url = JSON.parse(xhr.responseText)['redirect_url'];

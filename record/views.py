@@ -11,25 +11,8 @@ from django.utils import timezone
 from signin.models import User
 from .models import Note, Audio, Sentence
 from pydub import AudioSegment #ffmpeg must be installed in os.
-
-def coerce_to_post(request):
-    if request.method == 'PUT' or request.method == 'DELETE':
-        method = request.method
-        if hasattr(request, '_post'):
-            del request._post
-            del request._files
-        try:
-            request.method = 'POST'
-            request._load_post_and_files()
-            request.method = method
-        except AttributeError:
-            request.META['REQUEST_METHOD'] = 'POST'
-            request._load_post_and_files()
-            request.META['REQUEST_METHOD'] = method
-        if request.method == 'PUT':
-            request.PUT = request.POST
-        elif request.method == 'DELETE':
-            request.DELETE = request.POST
+from .util import coerce_to_post
+from signin.views import auth_validate_check
 
 def webm_to_wav(filename):
     input_path = settings.MEDIA_ROOT + '/' + filename + '.webm'
@@ -42,10 +25,9 @@ def get_list(request):
         if request.method == 'GET':
 
             user_id = int(request.GET.get('user_id'))
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
 
             json_res = dict()
             json_res['user_id'] = user_id
@@ -83,10 +65,10 @@ def manipulate_note(request):
             note_id = int(request.GET.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+
             json_res = dict()
             json_res['title'] = note.title
             json_res['content'] = note.content
@@ -111,10 +93,10 @@ def manipulate_note(request):
             return JsonResponse(json_res)
         elif request.method == 'POST':
             user_id = int(request.POST.get('user_id'))
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+            
             note = Note.objects.create(
                 user_id=user_id,
                 title='untitled',
@@ -133,10 +115,10 @@ def manipulate_note(request):
             note_id = int(request.PUT.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+            
             note.title = title
             note.content = content
             note.updated_at = timezone.now()
@@ -148,10 +130,10 @@ def manipulate_note(request):
             note_id = int(request.DELETE.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+            
             delete_audio_files(note_id)
             note.delete()
             
@@ -168,10 +150,10 @@ def save_audio(request):
             note_id = int(request.POST.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+            
             note.updated_at = timezone.now()
             note.save()
 
@@ -220,10 +202,10 @@ def manipulate_sentence(request):
             sentence_id = int(request.GET.get('sentence_id'))
             sentence = Sentence.objects.get(id=sentence_id)
             user_id = sentence.user.id
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+            
             data_url = sentence.data_url
             try:
                 fs = open(data_url, "rb")
@@ -243,10 +225,10 @@ def manipulate_sentence(request):
             content = str(request.POST.get('content'))
             audio = Audio.objects.get(id=audio_id)
             user_id = audio.user.id
-            """
-            if is_valid_auth(request, user_id) == False:
-                HttpResponse(status=400)
-            """
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=403)
+            
             is_ok, data_url = split_audio(audio.data_url, index, started_at, ended_at)
             if is_ok == True:
                 sentence = Sentence.objects.create(

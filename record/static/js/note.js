@@ -79,5 +79,16 @@ save_btn.onclick = function() {
 };
 
 back_btn.onclick = function() {
+    var note_id = getCookie('glisn_note_id');
+    var xhr = new XMLHttpRequest();
+    var formData = new FormData();
+    formData.append('note_id', note_id);
+    formData.append('title', user_title.value);
+    formData.append('content', user_content.value);
+    xhr.open('PUT', '/record/note');
+    xhr.send(formData);
+    xhr.onload = function() {
+        console.log('title and content are saved!');
+    }
     location.href = "/static/mylist.html";
 };
