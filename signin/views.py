@@ -37,7 +37,7 @@ def signin(request):
             user_info = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 
             if user_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-                return HttpResponse(status=403)
+                return HttpResponse(status=400)
 
             user_name = user_info['name']
             user_email = user_info['email']
@@ -64,9 +64,9 @@ def signin(request):
             json_res['redirect_url'] = '/mylist.html'
             json_res['user_id'] = user.id
 
-            return JsonResponse(json_res)
+            return JsonResponse(json_res, status=201)
         else:
-            return HttpResponse(status=400)
+            return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)
@@ -77,7 +77,7 @@ def delete_token(request):
             request.session.flush()
             return HttpResponse(status=200)
         else:
-            return HttpResponse(status=400)
+            return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)

@@ -27,7 +27,7 @@ def get_list(request):
             user_id = int(request.GET.get('user_id'))
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
 
             json_res = dict()
             json_res['user_id'] = user_id
@@ -44,7 +44,7 @@ def get_list(request):
             
             return JsonResponse(json_res)
         else:
-            return HttpResponse(status=400)
+            return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)
@@ -67,7 +67,7 @@ def manipulate_note(request):
             user_id = note.user.id
 
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
 
             json_res = dict()
             json_res['title'] = note.title
@@ -95,7 +95,7 @@ def manipulate_note(request):
             user_id = int(request.POST.get('user_id'))
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
             
             note = Note.objects.create(
                 user_id=user_id,
@@ -117,7 +117,7 @@ def manipulate_note(request):
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
             
             note.title = title
             note.content = content
@@ -132,14 +132,14 @@ def manipulate_note(request):
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
             
             delete_audio_files(note_id)
             note.delete()
             
             return HttpResponse(status=200)
         else:
-            return HttpResponse(status=400)
+            return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)
@@ -152,7 +152,7 @@ def save_audio(request):
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
             
             note.updated_at = timezone.now()
             note.save()
@@ -178,7 +178,7 @@ def save_audio(request):
             
             return JsonResponse(json_res, status=201)
         else:
-            return HttpResponse(status=400)    
+            return HttpResponse(status=405)    
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)
@@ -204,7 +204,7 @@ def manipulate_sentence(request):
             user_id = sentence.user.id
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
             
             data_url = sentence.data_url
             try:
@@ -227,7 +227,7 @@ def manipulate_sentence(request):
             user_id = audio.user.id
             
             if auth_validate_check(request, user_id) == False:
-                return HttpResponse(status=403)
+                return HttpResponse(status=401)
             
             is_ok, data_url = split_audio(audio.data_url, index, started_at, ended_at)
             if is_ok == True:
@@ -247,7 +247,7 @@ def manipulate_sentence(request):
             else:
                 return HttpResponse(status=400)
         else:
-            return HttpResponse(status=400)
+            return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
         return HttpResponse(status=400)
