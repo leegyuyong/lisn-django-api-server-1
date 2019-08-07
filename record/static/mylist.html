@@ -8,7 +8,16 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/mylist.css">
-    
+    <script>
+      function onload() {
+        gapi.load('auth2', function() {
+          gapi.auth2.init();
+        });
+      }
+    </script>
+    <script src="https://apis.google.com/js/platform.js?onload=onload" async defer></script>
+    <meta name="google-signin-client_id" content="935445294329-5mpgtul9b7ibvc56co139f2ullou1p6f.apps.googleusercontent.com">
+
     <title>GoodListener</title>
   </head>
   <body>

@@ -2,7 +2,21 @@ var signout_btn = document.getElementById("signout_btn");
 var create_note_btn = document.getElementById("create_note_btn");
 var note_btn = document.getElementsByClassName("note_btn");
 
-var user_id = 6; // User name: Jungyeon
+function get_url_params()
+{
+    var params = []
+	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	for(var i=0; i<hashes.length; i++)
+	{
+	    var hash = hashes[i].split('=');
+	    params.push(hash[0]);
+	    params[hash[0]] = hash[1];
+	}
+	return params;
+};
+
+var params = get_url_params();
+var user_id = params['user_id'];
 
 var note_list = document.getElementById('note_list');
 var uri = '/record/list' + '?' + 'user_id=' + user_id
@@ -49,6 +63,9 @@ xhr.onload = function() {
 };
 
 signout_btn.onclick = function() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut();
+    auth2.disconnect();
     location.href = "/";
 };
 
