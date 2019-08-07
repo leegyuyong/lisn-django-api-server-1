@@ -2,20 +2,15 @@ var recordButton = document.getElementById('record_btn');
 var sentence_list = document.getElementById('audio_stt_result_list');
 var state_text = document.getElementById('state_text');
 
-var get_url_params = function() {
-    var params = []
-	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-	for(var i=0; i<hashes.length; i++)
-	{
-	    var hash = hashes[i].split('=');
-	    params.push(hash[0]);
-	    params[hash[0]] = hash[1];
-	}
-	return params;
+var setCookie = function(name, value, exp) {
+    var date = new Date();
+    date.setTime(date.getTime() + exp*24*60*60*1000);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
 };
-
-var params = get_url_params();
-var note_id = params['note_id'];
+var getCookie = function(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+};
 
 var is_record = false;
 var recorder;
@@ -159,6 +154,7 @@ var sendRecording = function() {
         return;
     }
 
+    var note_id = getCookie('glisn_note_id');
     var formData = new FormData();
     formData.append('audio_data', blob, 'filename');
     formData.append('note_id', note_id);
