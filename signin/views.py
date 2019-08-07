@@ -12,7 +12,7 @@ from google.auth.transport import requests
 import jwt
 from GoodListener.settings import JWT_SECRET_KEY
 
-CLIENT_ID = '935445294329-5mpgtul9b7ibvc56co139f2ullou1p6f.apps.googleusercontent.com'
+CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
 
 def auth_validate_check(request, user_id):
     try:
