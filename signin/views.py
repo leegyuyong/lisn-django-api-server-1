@@ -5,6 +5,7 @@ from .models import User
 
 import os
 import sys
+import datetime
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
@@ -26,7 +27,12 @@ def oauth_google(request):
             user = User.objects.create(name=user_name, email=user_email)
         else:
             user = user_list[0]
-
+        """
+        payload = dict()
+        payload['user_id'] = user.id
+        payload['email'] = user.email
+        paylaod['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=60*60*24)
+        """
         json_res = dict()
         json_res['redirect_url'] = '/mylist.html'
         json_res['user_id'] = user.id

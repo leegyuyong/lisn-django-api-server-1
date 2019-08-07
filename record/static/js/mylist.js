@@ -2,21 +2,16 @@ var signout_btn = document.getElementById("signout_btn");
 var create_note_btn = document.getElementById("create_note_btn");
 var note_btn = document.getElementsByClassName("note_btn");
 
-function get_url_params()
-{
-    var params = []
-	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-	for(var i=0; i<hashes.length; i++)
-	{
-	    var hash = hashes[i].split('=');
-	    params.push(hash[0]);
-	    params[hash[0]] = hash[1];
-	}
-	return params;
+var setCookie = function(name, value, exp) {
+    var date = new Date();
+    date.setTime(date.getTime() + exp*24*60*60*1000);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
 };
-
-var params = get_url_params();
-var user_id = params['user_id'];
+var getCookie = function(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+};
+var user_id = getCookie('glisn_user_id');
 
 var note_list = document.getElementById('note_list');
 var uri = '/record/list' + '?' + 'user_id=' + user_id
@@ -36,7 +31,8 @@ xhr.onload = function() {
         btn.textContent = '[' + notes[i].title + ']\n';
         btn.textContent += notes[i].created_at + '\n';
         btn.onclick = function(event) {
-            location.href = "/static/note.html?note_id=" + event.target.id;
+            setCookie('glisn_note_id', event.target.id, 365);
+            location.href = "/static/note.html";
         };
 
         var del_btn = document.createElement('button');
@@ -64,6 +60,8 @@ xhr.onload = function() {
 
 signout_btn.onclick = function() {
     var auth2 = gapi.auth2.getAuthInstance();
+    setCookie('glisn_user_id', -1, 365);
+    setCookie('glisn_note_id', -1, 365);
     auth2.signOut();
     auth2.disconnect();
     location.href = "/";
@@ -76,9 +74,9 @@ create_note_btn.onclick = function() {
     xhr.open('POST', '/record/note');
     xhr.send(formData);
     xhr.onload = function() {
-        //console.log(xhr.responseText);
         var note_id = JSON.parse(xhr.responseText)['note_id'];
-        location.href = "/static/note.html?note_id=" + note_id;
+        setCookie('glisn_note_id', note_id, 365);
+        location.href = "/static/note.html";
     };
 };
 
