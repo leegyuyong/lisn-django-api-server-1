@@ -20,11 +20,7 @@ def auth_validate_check(request, user_id):
         byte_auth_token = auth_token.encode('utf-8')
         payload = jwt.decode(byte_auth_token, JWT_SECRET_KEY, algorithm='HS256')
         if payload['user_id'] == user_id:
-            user = User.objects.get(id=user_id)
-            if user.token == auth_token:
-                return True
-            else:
-                return False
+            return True
         else:
             return False
     except:
@@ -44,7 +40,7 @@ def signin(request):
             user_list = User.objects.filter(email=user_email)
 
             if len(user_list) == 0:
-                user = User.objects.create(name=user_name, email=user_email, token='_')
+                user = User.objects.create(name=user_name, email=user_email)
             else:
                 user = user_list[0]
             
@@ -55,8 +51,6 @@ def signin(request):
             
             byte_auth_token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
             auth_token = byte_auth_token.decode('utf-8')
-            user.token = auth_token
-            user.save()
 
             json_res = dict()
             json_res['redirect_url'] = '/mylist.html'
