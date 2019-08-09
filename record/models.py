@@ -7,6 +7,7 @@ class Note(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     content = models.TextField()
+    is_trash = models.BooleanField(default=False)
 
 class Audio(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)

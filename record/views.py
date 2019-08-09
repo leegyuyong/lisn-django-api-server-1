@@ -33,7 +33,7 @@ def get_list(request):
             json_res['user_id'] = user_id
             json_res['notes'] = []
 
-            notes = Note.objects.filter(user_id=user_id).order_by('created_at')
+            notes = Note.objects.filter(user_id=user_id, is_trash=False).order_by('created_at')
             for note in notes:
                 json_res['notes'].append({
                     'note_id': note.id,
@@ -102,7 +102,8 @@ def manipulate_note(request):
                 title='untitled',
                 created_at=timezone.now(),
                 updated_at=timezone.now(),
-                content=''
+                content='',
+                is_trash=False
             )
             json_res = dict()
             json_res['note_id'] = note.id
@@ -138,6 +139,56 @@ def manipulate_note(request):
             note.delete()
             
             return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+def throw_away_note(request):
+    try:
+        if request.method == 'PUT':
+            coerce_to_post(request)
+            note_id = int(request.PUT.get('note_id'))
+            note = Note.objects.get(id=note_id)
+            user_id = note.user.id
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=401)
+            
+            note.is_trash = True
+            note.save()
+
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+def get_trash_list(request):
+    try:
+        if request.method == 'GET':
+
+            user_id = int(request.GET.get('user_id'))
+            
+            if auth_validate_check(request, user_id) == False:
+                return HttpResponse(status=401)
+
+            json_res = dict()
+            json_res['user_id'] = user_id
+            json_res['notes'] = []
+
+            notes = Note.objects.filter(user_id=user_id, is_trash=True).order_by('created_at')
+            for note in notes:
+                json_res['notes'].append({
+                    'note_id': note.id,
+                    'title': note.title,
+                    'created_at': note.created_at,
+                    'updated_at': note.updated_at
+                })
+            
+            return JsonResponse(json_res)
         else:
             return HttpResponse(status=405)
     except:
