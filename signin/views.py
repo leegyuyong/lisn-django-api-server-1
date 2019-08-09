@@ -16,9 +16,9 @@ CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleuserconten
 
 def auth_validate_check(request, user_id):
     try:
-        auth_token = request.COOKIES['auth_token']
-        byte_auth_token = auth_token.encode('utf-8')
-        payload = jwt.decode(byte_auth_token, JWT_SECRET_KEY, algorithm='HS256')
+        access_token = request.COOKIES['access_token']
+        byte_access_token = access_token.encode('utf-8')
+        payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
         if payload['user_id'] == user_id:
             return True
         else:
@@ -49,15 +49,15 @@ def signin(request):
             payload['email'] = user.email
             payload['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=60*60*24)
             
-            byte_auth_token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
-            auth_token = byte_auth_token.decode('utf-8')
+            byte_access_token = jwt.encode(payload, JWT_SECRET_KEY, algorithm='HS256')
+            access_token = byte_access_token.decode('utf-8')
 
             json_res = dict()
             json_res['redirect_url'] = '/mylist.html'
             json_res['user_id'] = user.id
 
             response = JsonResponse(json_res, status=201)
-            response.set_cookie('auth_token', auth_token, httponly=True)
+            response.set_cookie('access_token', access_token, httponly=True)
 
             return response
         else:
@@ -70,7 +70,7 @@ def delete_token(request):
     try:
         if request.method == 'DELETE':
             response = HttpResponse(status=200)
-            response.delete_cookie('auth_token')
+            response.delete_cookie('access_token')
             return response
         else:
             return HttpResponse(status=405)
