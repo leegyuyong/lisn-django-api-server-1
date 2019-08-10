@@ -22,7 +22,8 @@ var tmp_id = 0;
 var current_start_tmp_id;
 var is_first_word;
 
-var recognition = new webkitSpeechRecognition();
+var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+var recognition = new SpeechRecognition();
 recognition.continuous = true;
 recognition.interimResults = true;
 recognition.lang = 'ko-KR';
