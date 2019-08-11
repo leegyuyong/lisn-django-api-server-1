@@ -89,6 +89,6 @@ back_btn.onclick = function() {
     xhr.send(formData);
     xhr.onload = function() {
         console.log('title and content are saved!');
+        location.href = "/static/mylist.html";
     }
-    location.href = "/static/mylist.html";
 };
