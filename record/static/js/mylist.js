@@ -2,7 +2,16 @@ var signout_btn = document.getElementById("signout_btn");
 var create_note_btn = document.getElementById("create_note_btn");
 var note_btn = document.getElementsByClassName("note_btn");
 
-var user_id = 6; // User name: Jungyeon
+var setCookie = function(name, value, exp) {
+    var date = new Date();
+    date.setTime(date.getTime() + exp*24*60*60*1000);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+};
+var getCookie = function(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+};
+var user_id = getCookie('glisn_user_id');
 
 var note_list = document.getElementById('note_list');
 var uri = '/record/list' + '?' + 'user_id=' + user_id
@@ -22,7 +31,8 @@ xhr.onload = function() {
         btn.textContent = '[' + notes[i].title + ']\n';
         btn.textContent += notes[i].created_at + '\n';
         btn.onclick = function(event) {
-            location.href = "/static/note.html?note_id=" + event.target.id;
+            setCookie('glisn_note_id', event.target.id, 365);
+            location.href = "/static/note.html";
         };
 
         var del_btn = document.createElement('button');
@@ -49,7 +59,17 @@ xhr.onload = function() {
 };
 
 signout_btn.onclick = function() {
-    location.href = "/";
+    var xhr = new XMLHttpRequest();
+    xhr.open('DELETE', '/signin/token');
+    xhr.send();
+    xhr.onload = function() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        setCookie('glisn_user_id', -1, 0);
+        setCookie('glisn_note_id', -1, 0);
+        auth2.signOut();
+        auth2.disconnect();
+        location.href = "/";
+    }
 };
 
 create_note_btn.onclick = function() {
@@ -59,9 +79,9 @@ create_note_btn.onclick = function() {
     xhr.open('POST', '/record/note');
     xhr.send(formData);
     xhr.onload = function() {
-        //console.log(xhr.responseText);
         var note_id = JSON.parse(xhr.responseText)['note_id'];
-        location.href = "/static/note.html?note_id=" + note_id;
+        setCookie('glisn_note_id', note_id, 365);
+        location.href = "/static/note.html";
     };
 };
 

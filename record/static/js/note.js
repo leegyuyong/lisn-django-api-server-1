@@ -5,21 +5,17 @@ var user_content = document.getElementById("user_text");
 var sentence_list = document.getElementById('audio_stt_result_list');
 var state_text = document.getElementById('state_text');
 
-function get_url_params()
-{
-    var params = []
-	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-	for(var i=0; i<hashes.length; i++)
-	{
-	    var hash = hashes[i].split('=');
-	    params.push(hash[0]);
-	    params[hash[0]] = hash[1];
-	}
-	return params;
+var setCookie = function(name, value, exp) {
+    var date = new Date();
+    date.setTime(date.getTime() + exp*24*60*60*1000);
+    document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
 };
+var getCookie = function(name) {
+    var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return value? value[2] : null;
+};
+var note_id = getCookie('glisn_note_id');
 
-var params = get_url_params();
-var note_id = params['note_id'];
 var uri = '/record/note' + '?' + 'note_id=' + note_id;
 var xhr = new XMLHttpRequest();
 xhr.open('GET', uri);
@@ -69,6 +65,7 @@ xhr.onload = function() {
 };
 
 save_btn.onclick = function() {
+    var note_id = getCookie('glisn_note_id');
     var xhr = new XMLHttpRequest();
     var formData = new FormData();
     formData.append('note_id', note_id);
@@ -82,5 +79,16 @@ save_btn.onclick = function() {
 };
 
 back_btn.onclick = function() {
-    location.href = "/static/mylist.html";
+    var note_id = getCookie('glisn_note_id');
+    var xhr = new XMLHttpRequest();
+    var formData = new FormData();
+    formData.append('note_id', note_id);
+    formData.append('title', user_title.value);
+    formData.append('content', user_content.value);
+    xhr.open('PUT', '/record/note');
+    xhr.send(formData);
+    xhr.onload = function() {
+        console.log('title and content are saved!');
+        location.href = "/static/mylist.html";
+    }
 };

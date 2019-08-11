@@ -8,7 +8,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/signin.css">
-    
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com">
+
     <title>GoodListener</title>
   </head>
   <body>
@@ -20,10 +23,8 @@
       </div>
     </nav>
 
-    <div class="container text-center">
-        <button type="button" class="btn btn-outline-danger btn-lg signin_btn" id="oauth_btn">
-          <img src="/static/img/google_icon.png" id="google_icon">Continue with Google
-        </button>
+    <div id="signin_div">
+      <div class="g-signin2" data-onsuccess="onSignIn" data-width="360" data-height="75" data-longtitle="true" data-theme="dark">google</div>
     </div>
 
     <!-- Optional JavaScript -->
