@@ -7,14 +7,10 @@ from django.core.exceptions import ObjectDoesNotExist
 import boto3
 import requests
 
-def upload_file_to_s3(file_name, bucket, object_name=None):
-    if object_name is None:
-        object_name = file_name
-
-    # Upload the file
+def upload_file_to_s3(file_object, bucket, object_name):
     s3_client = boto3.client('s3')
     try:
-        s3_client.upload_file(file_name, bucket, object_name)
+        s3_client.upload_fileobj(file_object, bucket, object_name)
     except:
         return False
     return True

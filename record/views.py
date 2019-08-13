@@ -195,7 +195,7 @@ def manipulate_audio(request):
             
             json_res = dict()
             json_res['data_url'] = create_presigned_url_s3('lisn', 'audio/' + str(audio.id) + '.webm')
-            
+
             return JsonResponse(json_res)
         elif request.method == 'POST':
             note_id = int(request.POST.get('note_id'))
@@ -213,16 +213,8 @@ def manipulate_audio(request):
                 user_id=user_id
             )
 
-            # save to local
             audio_data = request.FILES['audio_data']
-            fs = FileSystemStorage()
-            fs.save(str(audio.id) + '.webm', audio_data)
-            audio_data_path = settings.MEDIA_ROOT + '/' + str(audio.id) + '.webm'
-            # save to s3
-            upload_file_to_s3(audio_data_path, 'lisn', 'audio/' + str(audio.id) + '.webm')
-            # remove local data
-            if os.path.exists(audio_data_path):
-                os.remove(audio_data_path)
+            upload_file_to_s3(audio_data, 'lisn', 'audio/' + str(audio.id) + '.webm')
             
             json_res = dict()
             json_res['audio_id'] = audio.id
