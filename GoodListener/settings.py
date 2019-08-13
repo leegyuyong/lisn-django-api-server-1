@@ -20,8 +20,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_URL = '/audio_tmp/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'audio_tmp')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = ['*']
 
