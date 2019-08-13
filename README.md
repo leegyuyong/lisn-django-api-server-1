@@ -1,10 +1,14 @@
-Good Listener Project (SW Maestro)
+lisn project (SW Maestro)
 =====================
 
 ## Run
 
 ```
 $ pip install -r requirements.txt
+$ git checkout dev
+$ aws configure
+$ python manage.py makemigrations
+$ python manage.py migrate
 $ python manage.py runserver
 ```
 
