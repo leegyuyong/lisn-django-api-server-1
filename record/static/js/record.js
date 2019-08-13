@@ -1,4 +1,5 @@
 var recordButton = document.getElementById('record_btn');
+var pauseButton = document.getElementById('pause_btn');
 var sentence_list = document.getElementById('audio_stt_result_list');
 var state_text = document.getElementById('state_text');
 
@@ -12,6 +13,7 @@ var getCookie = function(name) {
     return value? value[2] : null;
 };
 
+var audio = new Audio();
 var is_record = false;
 var recorder;
 var chunks;
@@ -113,22 +115,16 @@ var startRecording = function(stream) {
 };
 
 var get_audio_and_play = function(sentence_id, index, audio_id, started_at, ended_at, content) {
-    // window.AudioContext = window.AudioContext||window.webkitAudioContext||window.mozAudioContext;
-    // var audio_context = new AudioContext();
-    // var source = audio_context.createBufferSource();
     var uri = '/record/audio' + '?' + 'audio_id=' + audio_id;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', uri);
-    // xhr.responseType = 'arraybuffer';
     xhr.send();
     xhr.onload = function() {
         var data_url = JSON.parse(xhr.responseText)['data_url'];
-        console.log(data_url);
-        // audio_context.decodeAudioData(xhr.response, function(buffer) {
-        //     source.buffer = buffer;
-        //     source.connect(audio_context.destination);
-        //     source.start(0);
-        // }, null);
+        audio.src = data_url;
+        audio.currentTime = started_at / 1000.0;
+        audio.volume = 1;
+        audio.play();    
     };
 };
 
@@ -211,4 +207,8 @@ recordButton.onclick = function() {
         recordButton.textContent = "RECORD";
         recordButton.className = "btn btn-success";
     }
+};
+
+pauseButton.onclick = function() {
+    audio.pause();
 };

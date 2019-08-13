@@ -42,23 +42,19 @@ xhr.onload = function() {
             sentence_tag.dataset.audio_id = audio_id;
             
             sentence_tag.onclick = function(event) {
-                // window.AudioContext = window.AudioContext||window.webkitAudioContext||window.mozAudioContext;
-                // var audio_context = new AudioContext();
-                // var source = audio_context.createBufferSource();
                 var audio_id = event.target.dataset.audio_id;
+                var started_at = event.target.dataset.started_at;
+                var ended_at = event.target.dataset.ended_at;
                 var uri = '/record/audio' + '?' + 'audio_id=' + audio_id;
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', uri);
-                // xhr.responseType = 'arraybuffer';
                 xhr.send();
                 xhr.onload = function() {
                     var data_url = JSON.parse(xhr.responseText)['data_url'];
-                    console.log(data_url);
-                    // audio_context.decodeAudioData(xhr.response, function(buffer) {
-                    //     source.buffer = buffer;
-                    //     source.connect(audio_context.destination);
-                    //     source.start(0);
-                    // }, null);
+                    audio.src = data_url;
+                    audio.currentTime = started_at / 1000.0;
+                    audio.volume = 1;
+                    audio.play();
                 };
             };
 
