@@ -12,7 +12,6 @@ class Note(models.Model):
 class Audio(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    data_url = models.CharField(max_length=200)
 
 class Sentence(models.Model):
     index = models.IntegerField()
@@ -21,4 +20,3 @@ class Sentence(models.Model):
     started_at = models.IntegerField()
     ended_at = models.IntegerField()
     content = models.TextField()
-    data_url = models.CharField(max_length=200)

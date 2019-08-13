@@ -80,6 +80,10 @@ li {
     padding: 15px 25px;
 }
 
+#pause_btn {
+    padding: 15px 20px;
+}
+
 .state_var {
     text-align: right;
 }

@@ -1,4 +1,5 @@
 var recordButton = document.getElementById('record_btn');
+var pauseButton = document.getElementById('pause_btn');
 var sentence_list = document.getElementById('audio_stt_result_list');
 var state_text = document.getElementById('state_text');
 
@@ -12,6 +13,7 @@ var getCookie = function(name) {
     return value? value[2] : null;
 };
 
+var audio = new Audio();
 var is_record = false;
 var recorder;
 var chunks;
@@ -112,25 +114,28 @@ var startRecording = function(stream) {
     recognition.start();
 };
 
-var get_audio_and_play = function(sentence_id) {
-    window.AudioContext = window.AudioContext||window.webkitAudioContext||window.mozAudioContext;
-    var audio_context = new AudioContext();
-    var source = audio_context.createBufferSource();
-    var uri = '/record/sentence' + '?' + 'sentence_id=' + sentence_id;
+var get_audio_and_play = function(sentence_id, index, audio_id, started_at, ended_at, content) {
+    var uri = '/record/audio' + '?' + 'audio_id=' + audio_id;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', uri);
-    xhr.responseType = 'arraybuffer';
     xhr.send();
     xhr.onload = function() {
-        audio_context.decodeAudioData(xhr.response, function(buffer) {
-            source.buffer = buffer;
-            source.connect(audio_context.destination);
-            source.start(0);
-        }, null);
+        var data_url = JSON.parse(xhr.responseText)['data_url'];
+        audio.src = data_url;
+        audio.currentTime = started_at / 1000.0;
+        audio.volume = 1;
+        audio.play();    
     };
 };
 
-var post_record_sentence_info = function(tmp_sentence_id, formData) {
+var post_record_sentence_info = function(tmp_sentence_id, index, audio_id, started_at, ended_at, content) {
+    var formData = new FormData();
+    formData.append('index', index);
+    formData.append('audio_id', audio_id);
+    formData.append('started_at', started_at);
+    formData.append('ended_at', ended_at);
+    formData.append('content', content);
+
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/record/sentence');
     xhr.send(formData);
@@ -140,7 +145,7 @@ var post_record_sentence_info = function(tmp_sentence_id, formData) {
         // set real sentence id
         sentence_tag.id = sentence_id;
         sentence_tag.onclick = function(event) {
-            get_audio_and_play(event.target.id);
+            get_audio_and_play(sentence_id, index, audio_id, started_at, ended_at, content);
         };
     };
 };
@@ -174,13 +179,7 @@ var sendRecording = function() {
             var sentence_tag = document.getElementById('tmp_' + current_tmp_id);
             var content = sentence_tag.textContent;
             
-            var formData = new FormData();
-            formData.append('index', (i-1));
-            formData.append('audio_id', audio_id);
-            formData.append('started_at', started_at);
-            formData.append('ended_at', ended_at);
-            formData.append('content', content);
-            post_record_sentence_info('tmp_' + current_tmp_id, formData);
+            post_record_sentence_info('tmp_' + current_tmp_id, i-1, audio_id, started_at, ended_at, content);
         }
 
         audio_timestamp = [];
@@ -208,4 +207,8 @@ recordButton.onclick = function() {
         recordButton.textContent = "RECORD";
         recordButton.className = "btn btn-success";
     }
+};
+
+pauseButton.onclick = function() {
+    audio.pause();
 };

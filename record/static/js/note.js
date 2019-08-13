@@ -27,6 +27,7 @@ xhr.onload = function() {
 
     var audios = note['audios'];
     for(var i=0; i<audios.length; i++){
+        var audio_id = audios[i].audio_id;
         var sentences = audios[i].sentences;
         for(var j=0; j<sentences.length; j++){
             var sentence = sentences[j];
@@ -38,23 +39,22 @@ xhr.onload = function() {
             sentence_tag.style.color = '#000000';
             sentence_tag.dataset.started_at = sentence.started_at;
             sentence_tag.dataset.ended_at = sentence.ended_at;
+            sentence_tag.dataset.audio_id = audio_id;
             
             sentence_tag.onclick = function(event) {
-                window.AudioContext = window.AudioContext||window.webkitAudioContext||window.mozAudioContext;
-                var audio_context = new AudioContext();
-                var source = audio_context.createBufferSource();
-
-                var uri = '/record/sentence' + '?' + 'sentence_id=' + event.target.id;
-                var xxxhr = new XMLHttpRequest();
-                xxxhr.open('GET', uri);
-                xxxhr.responseType = 'arraybuffer';
-                xxxhr.send();
-                xxxhr.onload = function() {
-                    audio_context.decodeAudioData(xxxhr.response, function(buffer) {
-                        source.buffer = buffer;
-                        source.connect(audio_context.destination);
-                        source.start(0);
-                    }, null);
+                var audio_id = event.target.dataset.audio_id;
+                var started_at = event.target.dataset.started_at;
+                var ended_at = event.target.dataset.ended_at;
+                var uri = '/record/audio' + '?' + 'audio_id=' + audio_id;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', uri);
+                xhr.send();
+                xhr.onload = function() {
+                    var data_url = JSON.parse(xhr.responseText)['data_url'];
+                    audio.src = data_url;
+                    audio.currentTime = started_at / 1000.0;
+                    audio.volume = 1;
+                    audio.play();
                 };
             };
 
