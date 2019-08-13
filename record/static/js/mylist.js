@@ -14,7 +14,7 @@ var getCookie = function(name) {
 var user_id = getCookie('glisn_user_id');
 
 var note_list = document.getElementById('note_list');
-var uri = '/record/list' + '?' + 'user_id=' + user_id
+var uri = '/v1/api/record/list' + '?' + 'user_id=' + user_id
 var xhr = new XMLHttpRequest();
 xhr.open('GET', uri);
 xhr.send();
@@ -44,7 +44,7 @@ xhr.onload = function() {
             var xhr = new XMLHttpRequest();
             var formData = new FormData();
             formData.append('note_id', event.target.id);
-            xhr.open('DELETE', '/record/note');
+            xhr.open('DELETE', '/v1/api/record/note');
             xhr.send(formData);
             xhr.onload = function() {
                 //console.log(xhr.responseText);
@@ -60,7 +60,7 @@ xhr.onload = function() {
 
 signout_btn.onclick = function() {
     var xhr = new XMLHttpRequest();
-    xhr.open('DELETE', '/signin/token');
+    xhr.open('DELETE', '/v1/api/signin/token');
     xhr.send();
     xhr.onload = function() {
         var auth2 = gapi.auth2.getAuthInstance();
@@ -76,7 +76,7 @@ create_note_btn.onclick = function() {
     var xhr = new XMLHttpRequest();
     var formData = new FormData();
     formData.append('user_id', user_id);
-    xhr.open('POST', '/record/note');
+    xhr.open('POST', '/v1/api/record/note');
     xhr.send(formData);
     xhr.onload = function() {
         var note_id = JSON.parse(xhr.responseText)['note_id'];

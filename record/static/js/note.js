@@ -16,7 +16,7 @@ var getCookie = function(name) {
 };
 var note_id = getCookie('glisn_note_id');
 
-var uri = '/record/note' + '?' + 'note_id=' + note_id;
+var uri = '/v1/api/record/note' + '?' + 'note_id=' + note_id;
 var xhr = new XMLHttpRequest();
 xhr.open('GET', uri);
 xhr.send();
@@ -45,7 +45,7 @@ xhr.onload = function() {
                 var audio_id = event.target.dataset.audio_id;
                 var started_at = event.target.dataset.started_at;
                 var ended_at = event.target.dataset.ended_at;
-                var uri = '/record/audio' + '?' + 'audio_id=' + audio_id;
+                var uri = '/v1/api/record/audio' + '?' + 'audio_id=' + audio_id;
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', uri);
                 xhr.send();
@@ -71,7 +71,7 @@ save_btn.onclick = function() {
     formData.append('note_id', note_id);
     formData.append('title', user_title.value);
     formData.append('content', user_content.value);
-    xhr.open('PUT', '/record/note');
+    xhr.open('PUT', '/v1/api/record/note');
     xhr.send(formData);
     xhr.onload = function() {
         console.log('title and content are saved!');
@@ -85,7 +85,7 @@ back_btn.onclick = function() {
     formData.append('note_id', note_id);
     formData.append('title', user_title.value);
     formData.append('content', user_content.value);
-    xhr.open('PUT', '/record/note');
+    xhr.open('PUT', '/v1/api/record/note');
     xhr.send(formData);
     xhr.onload = function() {
         console.log('title and content are saved!');

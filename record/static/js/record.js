@@ -115,7 +115,7 @@ var startRecording = function(stream) {
 };
 
 var get_audio_and_play = function(sentence_id, index, audio_id, started_at, ended_at, content) {
-    var uri = '/record/audio' + '?' + 'audio_id=' + audio_id;
+    var uri = '/v1/api/record/audio' + '?' + 'audio_id=' + audio_id;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', uri);
     xhr.send();
@@ -137,7 +137,7 @@ var post_record_sentence_info = function(tmp_sentence_id, index, audio_id, start
     formData.append('content', content);
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/record/sentence');
+    xhr.open('POST', '/v1/api/record/sentence');
     xhr.send(formData);
     xhr.onload = function() {
         var sentence_id = JSON.parse(xhr.responseText)['sentence_id'];
@@ -164,7 +164,7 @@ var sendRecording = function() {
     formData.append('audio_data', blob, 'filename');
     formData.append('note_id', note_id);
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/record/audio');
+    xhr.open('POST', '/v1/api/record/audio');
     xhr.send(formData);
     xhr.onload = function() {
         var audio_id = JSON.parse(xhr.responseText)['audio_id'];
