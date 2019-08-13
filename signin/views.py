@@ -10,7 +10,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 import jwt
-from GoodListener.settings import JWT_SECRET_KEY
+from lisn_project.settings import JWT_SECRET_KEY
 
 CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
 

@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'GoodListener.urls'
+ROOT_URLCONF = 'lisn_project.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'GoodListener.wsgi.application'
+WSGI_APPLICATION = 'lisn_project.wsgi.application'
 
 DATABASES = {
     'default': {

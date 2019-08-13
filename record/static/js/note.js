@@ -74,7 +74,7 @@ save_btn.onclick = function() {
     xhr.open('PUT', '/v1/api/record/note');
     xhr.send(formData);
     xhr.onload = function() {
-        console.log('title and content are saved!');
+        //console.log('title and content are saved!');
     }
 };
 
@@ -88,7 +88,7 @@ back_btn.onclick = function() {
     xhr.open('PUT', '/v1/api/record/note');
     xhr.send(formData);
     xhr.onload = function() {
-        console.log('title and content are saved!');
+        //console.log('title and content are saved!');
         location.href = "/static/mylist.html";
     }
 };
