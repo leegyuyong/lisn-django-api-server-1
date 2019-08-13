@@ -28,11 +28,18 @@ def get_list(request):
 
             notes = Note.objects.filter(user_id=user_id, is_trash=False).order_by('created_at')
             for note in notes:
+                full_content = note.content
+                summery = ''
+                if len(full_content) > 20:
+                    summery = full_content[:20]
+                else:
+                    summery = full_content
                 json_res['notes'].append({
                     'note_id': note.id,
                     'title': note.title,
                     'created_at': note.created_at,
-                    'updated_at': note.updated_at
+                    'updated_at': note.updated_at,
+                    'summery': summery
                 })
             
             return JsonResponse(json_res)

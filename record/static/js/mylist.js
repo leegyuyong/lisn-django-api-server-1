@@ -29,7 +29,7 @@ xhr.onload = function() {
         btn.type = "button";
         btn.className = "btn btn-outline-primary note_btn";
         btn.textContent = '[' + notes[i].title + ']\n';
-        btn.textContent += notes[i].created_at + '\n';
+        btn.textContent += notes[i].summery + '\n';
         btn.onclick = function(event) {
             setCookie('glisn_note_id', event.target.id, 365);
             location.href = "/static/note.html";
