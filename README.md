@@ -29,6 +29,7 @@ $ python manage.py runserver
 
 
 <br>
+
 ## main page
 
 ### 'Sign in' 버튼 or 'Sign up' 버튼을 누르면
@@ -39,6 +40,7 @@ $ python manage.py runserver
 
 
 <br>
+
 ## sign-in page
 
 ### 'Continue with Google Account' 버튼을 누르면
@@ -50,6 +52,7 @@ $ python manage.py runserver
 
 
 <br>
+
 ## my-list page
 
 ### Sign in 이후
