@@ -13,7 +13,8 @@ $ python manage.py runserver
 1. python3
 2. Django 2.0
 ```
-
+<br>
+<br>
 
 
 # API를 이용한 클라이언트 시나리오(초본)
@@ -27,7 +28,7 @@ $ python manage.py runserver
 ---
 
 
-
+<br>
 ## main page
 
 ### 'Sign in' 버튼 or 'Sign up' 버튼을 누르면
@@ -37,7 +38,7 @@ $ python manage.py runserver
 ---
 
 
-
+<br>
 ## sign-in page
 
 ### 'Continue with Google Account' 버튼을 누르면
@@ -48,7 +49,7 @@ $ python manage.py runserver
 ---
 
 
-
+<br>
 ## my-list page
 
 ### Sign in 이후
@@ -76,7 +77,7 @@ $ python manage.py runserver
 
 ---
 
-
+<br>
 
 ## record-note page
 
