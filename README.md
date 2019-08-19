@@ -1,5 +1,183 @@
-Good Listener Project (SW Maestro)
-=====================
+<h1 align="center">Good Listener Project (SW Maestro)</h1>
+
+<h1 align="center">LISN</h1>
+
+<div align="center">
+    <h3>
+        <a href="https://li-sn.io">
+            Website
+        </a>
+    </h3>
+</div>
+
+<br>
+
+## Table of Contents
+- [Structure](#Structure)
+- [main](#main)
+- [sign in](#sign in)
+- [record](#record)
+- [Run](#run)
+- [Using](#using)
+
+<br>
+
+## Structure
+- __main :__ 첫 화면
+- __signin :__ 로그인에 관련된 모든 것 
+- __record :__ 음성 노트에 관련된 모든 것
+
+<br>
+
+## main
+
+### HTTP API
+| Method | URI | Parameter | Return | Description |
+| ------ | ------ |------ |------ |------ |
+| GET | / |  | index.html | 처음 접속 시, main page 반환 |
+
+<br>
+
+## sign in
+
+*  로그인과 회원가입을 할 수 있는 페이지
+*  OAuth 2.0 - Google을 사용
+
+### DB - User table
+| Name | Type | Description | 
+| ------ | ------ |------ |
+| id | integer | pk |
+| name | char(100) | 사용자 이름 |
+| email | char(320) | google mail 계정 |
+
+### HTTP API
+| Method | URI | Parameter | Return | Description |
+| ------ | ------ |------ |------ |------ |
+| POST | /v1/api/signin/oauth/google/user | data | return #1 | google이 전달해주는 id_token을 이용하여 user의 정보를 받아오고 db에 저장. 이후 jwt 토큰을 생성해 user의 cookie에 등록하고 request |
+| DELETE | /v1/api/signin/token |  |  | session을 flush -> 등록된 토큰 제거 |
+
+**return #1**
+
+```
+{
+    redirect_url,
+    user_id
+}
+```
+
+<br>
+
+## record
+
+*  녹음과 관련된 페이지
+*  사용자의 note 리스트 페이지 + 편집/녹음 페이*  
+
+### DB - note table
+| Name | Type | Description | 
+| ------ | ------ |------ |
+| id | integer | pk |
+| user | integer | fk, user id |
+| title | char(200) | note 제목 |
+| created_at | date/time | 생성 날짜 |
+| updated_at | date/time | 수정 날짜 |
+| content | text | 사용자가 작성한 최종 회의록 |
+| is_trash | bool | 휴지통에 있는지 true / false |
+
+### DB - audio table
+| Name | Type | Description | 
+| ------ | ------ |------ |
+| id | integer | pk |
+| note | integer | fk, note id |
+| user | integer | fk, user id |
+
+### DB - sentence table
+| Name | Type | Description | 
+| ------ | ------ |------ |
+| id | integer | pk |
+| index | integer | audio 안에서 몇번째 문장인지 |
+| audio | integer | fk, audio id |
+| user | integer | fk, user id |
+| started_at | integer | record 안에서 시작 시간(밀리초단위) |
+| ended_at | integer | record 안에서 끝 시간(밀리초단위) |
+| content | text | 실제 문장 내용 |
+
+### HTTP API
+| Method | URI | Parameter | Parameter Type | Return | Description |
+| ------ | ------ |------ |------ |------ |------ |
+| GET | /v1/api/record/list | user_id | query | return #1 | user의 note list 정보를 가져오는 api(trash 제외) |
+| GET | /v1/api/record/note | note_id | query | return #2 | user의 한 개의 note에 대한 정보를 가져오는 api |
+| POST | /v1/api/record/note | user_id | form | return #3 | 새로운 note를 생성하고 그 정보를 받아오는 api |
+| PUT | /v1/api/record/note | note_id, title, content | form | return #4 | user가 작성한 title과 content를 저장하는 api |
+| DELETE | /v1/api/record/note | note_id | form | return #5 | 특정 note를 삭제하는 api |
+| POST | /v1/api/record/audio | note_id, FILE['audio_data'] | form | return #6 | 녹음파일 webm 형식으로 S3에 보내서 저장 |
+| GET | /v1/api/record/audio | audio_id | query | return #7 | S3 audio data의 url을 변환하는 api(제한시간 : 호출 이후 1시간) |
+| POST | /v1/api/record/sentence | index, audio_id, started_at, ended_at, content | form | return #8 | 문장 단위로 오디오를 split하고 저장 |
+| PUT | /v1/api/record/trash/note | note_id | form | return #9 | 특정 note를 휴지통으로 보내는 api |
+| GET | /v1/api/record/trash/note | user_id | form | like return #1 | user의 note list 정보를 가져오는 api(trash만) |
+
+**return #1**
+
+```
+{
+    user_id,
+    notes:[
+        {
+            note_id,
+            title,
+            created_at,
+            updated_at,
+            summary [content 앞 20글자]
+        }
+    ]    
+}
+```
+**return #2**
+```
+{
+    note_id,
+    title,
+    content,
+    audios:[
+        {
+            audio_id,
+            sentences:[
+                {
+                    sentence_id,
+                    started_at,
+                    ended_at,
+                    content
+                }
+            ]
+        }
+    ]
+}
+```
+**return #3**
+```
+{
+    note_id
+}
+```
+**return #6**
+```
+{
+    audio_id
+}
+```
+**return #7**
+```
+{
+    data_url
+}
+```
+**return #8**
+```
+{
+    sentence_id
+}
+```
+
+<br>
 
 ## Run
 
@@ -13,98 +191,3 @@ $ python manage.py runserver
 1. python3
 2. Django 2.0
 ```
-<br>
-<br>
-
-
-# API를 이용한 클라이언트 시나리오(초본)
-
----
-
-### 브라우저에 "www.li-sn.io"를 치면
-
-1. GET '/' 으로 index.html 전달받음
-
----
-
-
-<br>
-
-## main page
-
-### 'Sign in' 버튼 or 'Sign up' 버튼을 누르면
-
-1. GET '/signin'으로 signin.html 전달받고 Redirect (이때 vue.js는 싱글페이지 방식이므로 어떻게할지 고민)
-
----
-
-
-<br>
-
-## sign-in page
-
-### 'Continue with Google Account' 버튼을 누르면
-
-1. 'Social Account' DB에 저장, User DB에도 저장됨 (username, email, first_name, last_name)
-2. 결과적으로 GET '/record/mylist/' {user_id} 으로 mylist.html을 전달받고 Redirect
-
----
-
-
-<br>
-
-## my-list page
-
-### Sign in 이후
-
-1. GET '/record/mylist' {user_id} 으로 mylist.html을 전달받고 Redirect 해야되는데
-2. 이때 mylist.html을 db 참조해서 rendering (vue.js / django template 어떤걸 사용해서 할지 고민)
-3. rendering 할때 각 note들의 note_id를 html tag property로 지정
-
-### 이미 생성된 Note를 클릭하면
-
-1. GET '/record/note' {note_id} 으로 note.html을 전달받고 Redirect
-2. GET '/record/note/data' {note_id} 으로 왼쪽 text와 오른쪽 record 관련 정보, word 관련 정보 받아오기
-3. 받아온 data를 이용해서 왼쪽 markdown editor 초기화 및 rendering
-4. 받아온 data를 이용해서 오른쪽 word들 초기화 및 rendering
-
-### 'Create Note' 버튼을 누르면
-
-1. POST '/record/note'으로 새로운 note를 데이터베이스에 생성하고 note_id를 전달받음
-2. 전달받은 note_id를 가지고 위의 '이미 생성된 note를 클릭하면' 1번부터 똑같이 수행
-
-### 특정 Note의 'Delete' 버튼을 누르면
-
-1. DELETE '/record/note' {note_id}으로 해당 note 데이터베이스에서 삭제
-2. UI 갱신
-
----
-
-<br>
-
-## record-note page
-
-### 'Save' 버튼을 누르면
-
-1. PUT '/record/note' {note_id}으로 왼쪽 text를 데이터베이스에 갱신
-2. 오른쪽 STT결과들은 녹음시에 자동으로 데이터베이스에 저장 됨 (애초에 따로 수정불가)
-
-### 'Record' 버튼을 누르면
-
-1. 현재 note의 마지막 record index 번호 확인 (처음이면 0)
-2. 일정 시간단위로 record index를 1씩 증가시키며 API 호출
-3. 즉, POST '/record/audio' {note_id, record_index}으로 녹음데이터(blob/webm) 전송
-
-### 'Stop' 버튼을 누르면
-
-1. 현재까지 녹음데이터를 전송
-2. 주기적인 API 호출을 중단
-
-### STT결과 뷰어에서 특정 Word를 누르면
-
-1. 해당 word부터 다음 word로 반복하면서 API 호출
-2. 첫번째 word의 index를 확인하여 GET '/record/audio/word' {note_id, record_index, word_index}으로 잘린 audio file 받아서 재생
-3. 두번째 word부터는 word가 포함된 record index가 이전 word의 record index와 같은지 확인
-4. if 같으면, UI 처리만 하고 넘어감 (단어 주변 블록색이 바뀌면서 재생되고 있는게 보이도록)
-5. else 다르면, GET '/record/audio' {note_id, record_index}으로 전체 audio file 받아서 재생하고 넘어감
-6. 'audio stop' 버튼을 누를 때까지 위와같이 반복
