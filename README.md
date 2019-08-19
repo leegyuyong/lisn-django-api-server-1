@@ -15,7 +15,7 @@
 ## Table of Contents
 - [Structure](#Structure)
 - [main](#main)
-- [sign in](#sign in)
+- [signin](#signin)
 - [record](#record)
 - [Run](#run)
 - [Using](#using)
@@ -38,7 +38,7 @@
 
 <br>
 
-## sign in
+## signin
 
 *  로그인과 회원가입을 할 수 있는 페이지
 *  OAuth 2.0 - Google을 사용
