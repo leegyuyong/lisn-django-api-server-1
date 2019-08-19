@@ -1,6 +1,7 @@
-<h1 align="center">Good Listener Project (SW Maestro)</h1>
-
-<h1 align="center">LISN</h1>
+<div align="center">
+    <h1>Good Listener Project (SW Maestro)</h1>
+    <h1>LISN</h1>
+</div>
 
 <div align="center">
     <h3>
