@@ -1,0 +1,12 @@
+db.sqlite3
+*.DS_Store
+*__pycache__
+*.webm
+*.flac
+api/record/migrations/*
+!api/record/migrations/__init__.py
+api/user/migrations/*
+!api/user/migrations/__init__.py
+lisn.log
+secret_keys.json
+static/
