@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 
 from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
@@ -12,6 +13,11 @@ from signin.models import User
 from .models import Note, Audio, Sentence
 from .util import coerce_to_post, upload_file_to_s3, delete_file_to_s3, create_presigned_url_s3
 from signin.views import auth_validate_check
+
+def remove_tag(content):
+   cleanr =re.compile('<.*?>')
+   cleantext = re.sub(cleanr, '', content)
+   return cleantext
 
 def get_list(request):
     try:
@@ -28,7 +34,7 @@ def get_list(request):
 
             notes = Note.objects.filter(user_id=user_id, is_trash=False).order_by('created_at')
             for note in notes:
-                full_content = note.content
+                full_content = remove_tag(note.content)
                 summery = ''
                 if len(full_content) > 20:
                     summery = full_content[:20]
