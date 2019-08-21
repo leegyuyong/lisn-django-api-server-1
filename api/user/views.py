@@ -1,30 +1,18 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-
-from .models import User
-
 import os
 import sys
 import datetime
+import jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
-import jwt
-from lisn_project.settings import JWT_SECRET_KEY
+from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+
+from api.user.models import User
+from api.user.util import auth_validate_check
+from config.settings import JWT_SECRET_KEY
 
 CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
-
-def auth_validate_check(request, user_id):
-    try:
-        access_token = request.COOKIES['access_token']
-        byte_access_token = access_token.encode('utf-8')
-        payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
-        if payload['user_id'] == user_id:
-            return True
-        else:
-            return False
-    except:
-        return False
 
 def signin(request):
     try:

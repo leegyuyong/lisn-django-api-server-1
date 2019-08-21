@@ -1,5 +1,5 @@
 from django.db import models
-from signin.models import User
+from api.user.models import User
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

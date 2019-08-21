@@ -9,10 +9,10 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
-from signin.models import User
-from .models import Note, Audio, Sentence
-from .util import coerce_to_post, upload_file_to_s3, delete_file_to_s3, create_presigned_url_s3
-from signin.views import auth_validate_check
+from api.user.models import User
+from api.user.util import auth_validate_check
+from api.record.models import Note, Audio, Sentence
+from api.record.util import coerce_to_post, upload_file_to_s3, delete_file_to_s3, create_presigned_url_s3
 
 def remove_tag(content):
    cleanr =re.compile('<.*?>')
@@ -136,7 +136,7 @@ def manipulate_note(request):
             # delete audio files
             audios = Audio.objects.filter(note_id=note_id)
             for audio in audios:
-                delete_file_to_s3('lisn', 'audio/' + str(audio.id) + '.webm')
+                delete_file_to_s3('audio/' + str(audio.id) + '.webm')
             note.delete()
             
             return HttpResponse(status=200)
@@ -207,7 +207,7 @@ def manipulate_audio(request):
                 return HttpResponse(status=401)
             
             json_res = dict()
-            json_res['data_url'] = create_presigned_url_s3('lisn', 'audio/' + str(audio.id) + '.webm')
+            json_res['data_url'] = create_presigned_url_s3('audio/' + str(audio.id) + '.webm')
 
             return JsonResponse(json_res)
         elif request.method == 'POST':
@@ -227,7 +227,7 @@ def manipulate_audio(request):
             )
 
             audio_data = request.FILES['audio_data']
-            upload_file_to_s3(audio_data, 'lisn', 'audio/' + str(audio.id) + '.webm')
+            upload_file_to_s3(audio_data, 'audio/' + str(audio.id) + '.webm')
             
             json_res = dict()
             json_res['audio_id'] = audio.id

@@ -1,29 +1,47 @@
 import os, json
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 DEBUG = True
 
+# set base dir path
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# set language & timezone
+LANGUAGE_CODE = 'ko'
+TIME_ZONE = 'Asia/Seoul'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = False
+
+# set keys & aws s3 bucket
 if DEBUG == True:
     SECRET_KEY = 'ksdafja!@#!#asflksjfd^%$%klsnf!@#@#!#'
     JWT_SECRET_KEY = '123fhksjdnnm.nv.@#$@#$vx.!@#!@#sdv@!#'
+    AWS_S3_BUCKET = 'lisn'
 else:
-    KEY_PATH = os.path.join(BASE_DIR, 'key.json')
+    KEY_PATH = os.path.join(BASE_DIR, 'secret_keys.json')
     keys = dict()
     with open(KEY_PATH) as f:
         keys = json.loads(f.read())
     SECRET_KEY = keys['DJANGO_SECRET_KEY']
     JWT_SECRET_KEY = keys['JWT_SECRET_KEY']
+    AWS_S3_BUCKET = 'lisn'
 
+# set cors
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+# set url & root
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = ''
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ALLOWED_HOSTS = ['*']
+
+ROOT_URLCONF = 'config.urls'
+
+WSGI_APPLICATION = 'config.wsgi.application'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,10 +52,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
-    'main',
-    'signin',
-    'record',
+    'api.user',
+    'api.record',
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,12 +74,12 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-ROOT_URLCONF = 'lisn_project.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'static')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,15 +91,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'lisn_project.wsgi.application'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -91,29 +106,3 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-LANGUAGE_CODE = 'ko'
-TIME_ZONE = 'Asia/Seoul'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = False
-
-LOG_PATH = os.path.join(BASE_DIR, 'debug.log')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': LOG_PATH,
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
