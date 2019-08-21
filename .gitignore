@@ -3,6 +3,10 @@ db.sqlite3
 *__pycache__
 *.webm
 *.flac
-*/migrations
-!*/migrations/__init__.py
-key.json
+api/record/migrations/*
+!api/record/migrations/__init__.py
+api/user/migrations/*
+!api/user/migrations/__init__.py
+lisn.log
+secret_keys.json
+static/

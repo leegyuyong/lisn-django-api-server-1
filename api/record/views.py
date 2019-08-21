@@ -13,6 +13,8 @@ from api.user.models import User
 from api.user.util import auth_validate_check
 from api.record.models import Note, Audio, Sentence
 from api.record.util import coerce_to_post, upload_file_to_s3, delete_file_to_s3, create_presigned_url_s3
+from config.settings import JWT_SECRET_KEY
+import log
 
 def remove_tag(content):
    cleanr =re.compile('<.*?>')
@@ -22,10 +24,11 @@ def remove_tag(content):
 def get_list(request):
     try:
         if request.method == 'GET':
-
+            request_param = request.GET
             user_id = int(request.GET.get('user_id'))
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
 
             json_res = dict()
@@ -48,21 +51,26 @@ def get_list(request):
                     'summery': summery
                 })
             
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=200\n')
             return JsonResponse(json_res)
         else:
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=405\n')
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=400\n')
         return HttpResponse(status=400)
 
 def manipulate_note(request):
     try:
         if request.method == 'GET':
+            request_param = request.GET
             note_id = int(request.GET.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
 
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
 
             json_res = dict()
@@ -88,11 +96,14 @@ def manipulate_note(request):
 
                 json_res['audios'].append(json_audio)
             
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=200\n')
             return JsonResponse(json_res)
         elif request.method == 'POST':
+            request_param = request.POST
             user_id = int(request.POST.get('user_id'))
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             note = Note.objects.create(
@@ -106,9 +117,11 @@ def manipulate_note(request):
             json_res = dict()
             json_res['note_id'] = note.id
 
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=201\n')
             return JsonResponse(json_res, status=201)
         elif request.method == 'PUT':
             coerce_to_post(request)
+            request_param = request.PUT
             title = str(request.PUT.get('title'))
             content = str(request.PUT.get('content'))
             note_id = int(request.PUT.get('note_id'))
@@ -116,6 +129,7 @@ def manipulate_note(request):
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             note.title = title
@@ -123,14 +137,17 @@ def manipulate_note(request):
             note.updated_at = timezone.now()
             note.save()
 
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=200\n')
             return HttpResponse(status=200)
         elif request.method == 'DELETE':
             coerce_to_post(request)
+            request_param = request.DELETE
             note_id = int(request.DELETE.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             # delete audio files
@@ -139,41 +156,50 @@ def manipulate_note(request):
                 delete_file_to_s3('audio/' + str(audio.id) + '.webm')
             note.delete()
             
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=200\n')
             return HttpResponse(status=200)
         else:
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=405\n')
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=400\n')
         return HttpResponse(status=400)
 
 def throw_away_note(request):
     try:
         if request.method == 'PUT':
             coerce_to_post(request)
+            request_param = request.PUT
             note_id = int(request.PUT.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             note.is_trash = True
             note.save()
 
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=200\n')
             return HttpResponse(status=200)
         else:
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=405\n')
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=400\n')
         return HttpResponse(status=400)
 
 def get_trash_list(request):
     try:
         if request.method == 'GET':
-
+            request_param = request.GET
             user_id = int(request.GET.get('user_id'))
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
 
             json_res = dict()
@@ -189,33 +215,41 @@ def get_trash_list(request):
                     'updated_at': note.updated_at
                 })
             
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=200\n')
             return JsonResponse(json_res)
         else:
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=405\n')
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=400\n')
         return HttpResponse(status=400)
 
 def manipulate_audio(request):
     try:
         if request.method == 'GET':
+            request_param = request.GET
             audio_id = int(request.GET.get('audio_id'))
             audio = Audio.objects.get(id=audio_id)
             user_id = audio.user.id
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             json_res = dict()
             json_res['data_url'] = create_presigned_url_s3('audio/' + str(audio.id) + '.webm')
 
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=200\n')
             return JsonResponse(json_res)
         elif request.method == 'POST':
+            request_param = request.POST
             note_id = int(request.POST.get('note_id'))
             note = Note.objects.get(id=note_id)
             user_id = note.user.id
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             note.updated_at = timezone.now()
@@ -232,16 +266,20 @@ def manipulate_audio(request):
             json_res = dict()
             json_res['audio_id'] = audio.id
             
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=201\n')
             return JsonResponse(json_res, status=201)
         else:
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=405\n')
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=400\n')
         return HttpResponse(status=400)
 
 def manipulate_sentence(request):
     try:
         if request.method == 'POST':
+            request_param = request.POST
             index = int(request.POST.get('index'))
             audio_id = int(request.POST.get('audio_id'))
             started_at = int(request.POST.get('started_at'))
@@ -251,6 +289,7 @@ def manipulate_sentence(request):
             user_id = audio.user.id
             
             if auth_validate_check(request, user_id) == False:
+                log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=401\n')
                 return HttpResponse(status=401)
             
             sentence = Sentence.objects.create(
@@ -264,9 +303,12 @@ def manipulate_sentence(request):
             json_res = dict()
             json_res['sentence_id'] = sentence.id
             
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=201\n')
             return JsonResponse(json_res, status=201)
         else:
+            log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=405\n')
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=400\n')
         return HttpResponse(status=400)
