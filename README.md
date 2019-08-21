@@ -149,6 +149,8 @@
 }
 ```
 
+<br>
+
 ## API response status code
 
 | Status | Description |
