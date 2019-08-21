@@ -6,8 +6,12 @@
 - [Record API](#Record-API)
 - [API response status code](#API-response-status-code)
 
+<br>
+
 ## Server Architecture
 ![Architecture](https://user-images.githubusercontent.com/24379083/63470541-e01b9f80-c4a7-11e9-92db-4b5cd5c524f0.png)
+
+<br>
 
 ## User API
 
