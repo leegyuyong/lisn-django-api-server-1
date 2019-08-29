@@ -153,7 +153,7 @@ def manipulate_note(request):
             # delete audio files
             audios = Audio.objects.filter(note_id=note_id)
             for audio in audios:
-                delete_file_to_s3('audio/' + str(audio.id) + '.webm')
+                delete_file_to_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
             note.delete()
             
             log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + 'status=200\n')
@@ -238,7 +238,7 @@ def manipulate_audio(request):
                 return HttpResponse(status=401)
             
             json_res = dict()
-            json_res['data_url'] = create_presigned_url_s3('audio/' + str(audio.id) + '.webm')
+            json_res['data_url'] = create_presigned_url_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
 
             log.logger.debug(str(request) + '\n' + str(request_param) + '\n' + str(json_res) + '\n' + 'status=200\n')
             return JsonResponse(json_res)
@@ -261,7 +261,7 @@ def manipulate_audio(request):
             )
 
             audio_data = request.FILES['audio_data']
-            upload_file_to_s3(audio_data, 'audio/' + str(audio.id) + '.webm')
+            upload_file_to_s3(audio_data, settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
             
             json_res = dict()
             json_res['audio_id'] = audio.id

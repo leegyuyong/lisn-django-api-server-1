@@ -17,6 +17,7 @@ if DEBUG == True:
     SECRET_KEY = 'ksdafja!@#!#asflksjfd^%$%klsnf!@#@#!#'
     JWT_SECRET_KEY = '123fhksjdnnm.nv.@#$@#$vx.!@#!@#sdv@!#'
     AWS_S3_BUCKET = 'lisn'
+    AWS_S3_MEDIA_DIR = 'audio-dev1/'
 else:
     KEY_PATH = os.path.join(BASE_DIR, 'secret_keys.json')
     keys = dict()
