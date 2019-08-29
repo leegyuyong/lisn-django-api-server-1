@@ -26,6 +26,7 @@ else:
     SECRET_KEY = keys['DJANGO_SECRET_KEY']
     JWT_SECRET_KEY = keys['JWT_SECRET_KEY']
     AWS_S3_BUCKET = 'lisn'
+    AWS_S3_MEDIA_DIR = 'audio/'
 
 # set cors
 CORS_ORIGIN_ALLOW_ALL = True
