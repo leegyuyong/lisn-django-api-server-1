@@ -1,9 +1,14 @@
 from django.db import models
-from api.user.models import User
+
+class User(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=320)
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
+    started_at = models.DateTimeField()
+    ended_at = models.DateTimeField()
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     content = models.TextField()

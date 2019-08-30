@@ -54,8 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
-    'api.user',
-    'api.record',
+    'api',
 ]
 
 DATABASES = {
