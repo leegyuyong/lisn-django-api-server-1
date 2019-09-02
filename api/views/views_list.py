@@ -74,8 +74,8 @@ def get_directory_list(request):
     directories = Directory.objects.filter(user_id=user_id)
     for directory in directories:
         json_res['directories'].append({
-            'directory_id': directory_id,
-            'name': name
+            'directory_id': directory.id,
+            'name': directory.name
         })
     
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
