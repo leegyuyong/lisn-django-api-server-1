@@ -4,6 +4,10 @@ class User(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=320)
 
+class Directory(models.Model):                                  # Directory DB 추가
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     directory = models.ForeignKey(Directory, on_delete=models.PROTECT, null=True) # Note 테이블에 Directory 연결, Directory 삭제되도 Note 삭제 안됨
@@ -26,7 +30,3 @@ class Sentence(models.Model):
     started_at = models.IntegerField()
     ended_at = models.IntegerField()
     content = models.TextField()
-
-class Directory(models.Model):                                  # Directory DB 추가
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
