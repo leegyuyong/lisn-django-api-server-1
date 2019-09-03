@@ -9,8 +9,8 @@ urlpatterns = [
     path('note/audio', views.views_audio.api_note_audio, name='api_note_audio'),
     path('note/trash', views.views_trash.api_note_trash, name='api_note_trash'),
     path('note/sentence', views.views_sentence.api_note_sentence, name='api_note_sentence'),
+    path('note/directory', views.views_directory.api_note_move, name='api_note_move'),                         # directory 이동
     path('list/note', views.views_list.api_directory_note_list, name='api_directory_note_list'),         # user의 특정 directory의 note list 반환(trash 제외)
     path('list/directory', views.views_list.api_directory_list, name='api_directory_list'),              # user의 directory list 반환
     path('directory', views.views_directory.api_directory, name='api_directory'),                             # directory 생성, 수정, 삭제
-    path('note/directory', views.views_directory.api_note_move, name="api_note_move")                         # directory 이동
 ]

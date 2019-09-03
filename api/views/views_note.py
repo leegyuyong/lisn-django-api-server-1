@@ -49,6 +49,7 @@ def create_note(request):
     
     note = Note.objects.create(
         user_id=user_id,
+        #directory=0,
         title='untitled',
         started_at=timezone.now(),
         ended_at=timezone.now(),

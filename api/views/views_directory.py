@@ -21,7 +21,7 @@ def create_directory(request):
     log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
-def delete_note(request):
+def delete_directory(request):
     coerce_to_post(request)
     request_param = request.DELETE
     directory_id = int(request.DELETE.get('directory_id'))
@@ -47,12 +47,14 @@ def update_directory(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
-def move_directory(request):                                                # note와 directory 연결법 고민...
+def move_directory(request):
     coerce_to_post(request)
     request_param = request.PUT
 
     note_id = int(request.PUT.get('note_id'))
     directory_id = int(request.PUT.get('directory_id'))
+
+    console.log(note_id, directory_id)
 
     note = Note.objects.get(id=note_id)
 
@@ -61,6 +63,9 @@ def move_directory(request):                                                # no
 
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
+
+def null_directory(request):
+    console.log("null function")
 
 def api_directory(request):
     try:
