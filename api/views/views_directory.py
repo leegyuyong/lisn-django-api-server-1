@@ -83,7 +83,7 @@ def api_directory(request):
         log(request=request, status_code=400)
         return HttpResponse(status=400)
 
-def api_note_move(request):
+def api_note_directory(request):
     try:
         if request.method == 'PUT':
             return move_directory(request)

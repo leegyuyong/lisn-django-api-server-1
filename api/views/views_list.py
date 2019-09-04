@@ -81,17 +81,14 @@ def get_directory_list(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
-def get_directory_note_list(request):
+def get_list_note(request):
     request_param = request.GET
-    user_id = int(request.GET.get('user_id'))
     directory_id = int(request.GET.get('directory_id'))
-    user = User.objects.get(id=user_id)
-    user_name = user.name
 
     json_res = dict()
     json_res['notes'] = []
 
-    notes = Note.objects.filter(user_id=user_id, directory_id=directory_id, is_trash=False).order_by('created_at')
+    notes = Note.objects.filter(directory_id=directory_id, is_trash=False).order_by('created_at')
     for note in notes:
         full_content = remove_tag(note.content)
         summery = ''
@@ -101,7 +98,7 @@ def get_directory_note_list(request):
             summery = full_content
         
         json_res['notes'].append({
-            'user_name': user_name,
+            #'user_name': user_name,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
@@ -148,10 +145,10 @@ def api_directory_list(request):
         log(request=request, status_code=400)
         return HttpResponse(status=400)
 
-def api_directory_note_list(request):
+def api_list_note(request):
     try:
         if request.method == 'GET':
-            return get_directory_note_list(request)
+            return get_list_note(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)
