@@ -23,15 +23,18 @@ def get_token(request):
     if user_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
         log(request=request, status_code=400, request_param=request_param)
         return HttpResponse(status=400)
-
+    
     user_name = user_info['name']
     user_email = user_info['email']
+    user_picture_url = user_info['picture']
     user_list = User.objects.filter(email=user_email)
 
     if len(user_list) == 0:
-        user = User.objects.create(name=user_name, email=user_email)
+        user = User.objects.create(name=user_name, email=user_email, picture_url=user_picture_url)
     else:
         user = user_list[0]
+        user.picture_url = user_picture_url
+        user.save()
     
     payload = dict()
     payload['user_id'] = user.id

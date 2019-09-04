@@ -64,7 +64,7 @@ def get_list_note_trash(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
-def get_directory_list(request):
+def get_list_directory(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
 
@@ -136,7 +136,7 @@ def api_list_note_trash(request):
 def api_directory_list(request):
     try:
         if request.method == 'GET':
-            return get_directory_list(request)
+            return get_list_directory(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)

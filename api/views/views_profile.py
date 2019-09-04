@@ -13,9 +13,9 @@ def get_profile_info(request):
     user = User.objects.get(id=user_id)
     
     json_res = dict()
-    json_res['user_id'] = user.id
-    json_res['name'] = user.name
-    json_res['email'] = user.email
+    json_res['user_name'] = user.name
+    json_res['user_email'] = user.email
+    json_res['user_picture_url'] = user.picture_url
 
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
