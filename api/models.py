@@ -3,9 +3,15 @@ from django.db import models
 class User(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=320)
+    picture_url = models.CharField(max_length=320)              # Google 서버에 저장된
+
+class Directory(models.Model):                                  # Directory DB 추가
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    directory = models.ForeignKey(Directory, on_delete=models.PROTECT, null=True) # Note 테이블에 Directory 연결, Directory 삭제되도 Note 삭제 안됨
     title = models.CharField(max_length=200)
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField()
