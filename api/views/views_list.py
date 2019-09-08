@@ -81,7 +81,7 @@ def get_list_directory(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
-def get_list_note(request):
+def get_list_note_by_directory(request):
     request_param = request.GET
     directory_id = int(request.GET.get('directory_id'))
 
@@ -109,7 +109,7 @@ def get_list_note(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
-def get_list_shared(request):
+def get_list_note_shared(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
 
@@ -138,7 +138,7 @@ def get_list_shared(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
-def get_shared_user(request):
+def get_list_user_shared(request):
     request_param = request.GET
     note_id = int(request.GET.get('note_id'))
 
@@ -182,7 +182,7 @@ def api_list_note_trash(request):
         log(request=request, status_code=400)
         return HttpResponse(status=400)
 
-def api_directory_list(request):
+def api_list_directory(request):
     try:
         if request.method == 'GET':
             return get_list_directory(request)
@@ -197,7 +197,7 @@ def api_directory_list(request):
 def api_list_note(request):
     try:
         if request.method == 'GET':
-            return get_list_note(request)
+            return get_list_note_by_directory(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)
@@ -206,10 +206,10 @@ def api_list_note(request):
         log(request=request, status_code=400)
         return HttpResponse(status=400)
 
-def api_shared_list(request):
+def api_list_note_shared(request):
     try:
         if request.method == 'GET':
-            return get_list_shared(request)
+            return get_list_note_shared(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)
@@ -218,10 +218,10 @@ def api_shared_list(request):
         log(request=request, status_code=400)
         return HttpResponse(status=400)
 
-def api_shared_user(request):
+def api_list_user_shared(request):
     try:
         if request.method == 'GET':
-            return get_shared_user(request)
+            return get_list_user_shared(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)

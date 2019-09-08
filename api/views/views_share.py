@@ -7,7 +7,7 @@ from django.conf import settings
 from api.models import User, Note, Share
 from api.utils import coerce_to_post
 
-def make_share(request):
+def make_sharing(request):
     request_param = request.POST
     note_id = int(request.POST.get('note_id'))
     user_email = str(request.POST.get('user_email'))
@@ -24,7 +24,7 @@ def make_share(request):
     log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
-def delete_share(request):
+def delete_sharing(request):
     coerce_to_post(request)
     request_param = request.DELETE
     note_id = int(request.DELETE.get('note_id'))
@@ -37,9 +37,9 @@ def delete_share(request):
 def api_note_shared(request):
     try:
         if request.method == 'POST':
-            return make_share(request)
+            return make_sharing(request)
         elif request.mothod == 'DELETE':
-            return delete_share(request)
+            return delete_sharing(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)
