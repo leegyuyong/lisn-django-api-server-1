@@ -48,7 +48,7 @@ def update_directory(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
-def move_directory(request):
+def move_to_directory(request):
     coerce_to_post(request)
     request_param = request.PUT
 
@@ -62,7 +62,7 @@ def move_directory(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
-def null_directory(request):
+def move_to_null_directory(request):
     coerce_to_post(request)
     request_param = request.DELETE
 
@@ -94,9 +94,9 @@ def api_directory(request):
 def api_note_directory(request):
     try:
         if request.method == 'PUT':
-            return move_directory(request)
+            return move_to_directory(request)
         elif request.method == 'DELETE':
-            return null_directory(request)
+            return move_to_null_directory(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)
