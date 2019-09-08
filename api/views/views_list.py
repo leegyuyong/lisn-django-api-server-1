@@ -114,11 +114,11 @@ def get_list_shared(request):
     user_id = int(request.GET.get('user_id'))
 
     json_res = dict()
-    json_res['shares'] = []
+    json_res['notes'] = []
 
-    shares = Share.objects.filter(email=user_id)
+    notes = Share.objects.filter(email=user_id)
 
-    for share in shares:
+    for share in notes:
         full_content = remove_tag(share.note.content)
         summery = ''
         if len(full_content) > 20:
@@ -126,7 +126,7 @@ def get_list_shared(request):
         else:
             summery = full_content
 
-        json_res['shares'].append({
+        json_res['notes'].append({
             'note_id': share.note.id,
             'title': share.note.title,
             'created_at': share.note.created_at,
