@@ -16,7 +16,7 @@ def get_list_note_all(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
     user = User.objects.get(id=user_id)
-    user_name = user.name
+    user_email = user.email
 
     json_res = dict()
     json_res['notes'] = []
@@ -31,7 +31,7 @@ def get_list_note_all(request):
             summery = full_content
         
         json_res['notes'].append({
-            'user_name': user_name,
+            'user_email': user_email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
@@ -46,7 +46,7 @@ def get_list_note_trash(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
     user = User.objects.get(id=user_id)
-    user_name = user.name
+    user_email = user.email
 
     json_res = dict()
     json_res['notes'] = []
@@ -54,7 +54,7 @@ def get_list_note_trash(request):
     notes = Note.objects.filter(user_id=user_id, is_trash=True).order_by('created_at')
     for note in notes:
         json_res['notes'].append({
-            'user_name': user_name,
+            'user_email': user_email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
@@ -83,7 +83,10 @@ def get_list_directory(request):
 
 def get_list_note_by_directory(request):
     request_param = request.GET
+    user_id = int(request.GET.get('user_id'))
     directory_id = int(request.GET.get('directory_id'))
+    user = User.objects.get(id=user_id)
+    user_email = user.email
 
     json_res = dict()
     json_res['notes'] = []
@@ -98,7 +101,7 @@ def get_list_note_by_directory(request):
             summery = full_content
         
         json_res['notes'].append({
-            #'user_name': user_name,
+            'user_email': user_email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
@@ -112,13 +115,14 @@ def get_list_note_by_directory(request):
 def get_list_note_shared(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
+    user = User.objects.get(id=user_id)
+    user_email = user.email
 
     json_res = dict()
     json_res['notes'] = []
 
-    notes = Share.objects.filter(email=user_id)
-
-    for share in notes:
+    shares = Share.objects.filter(user_id=user_id)
+    for share in shares:
         full_content = remove_tag(share.note.content)
         summery = ''
         if len(full_content) > 20:
@@ -127,6 +131,7 @@ def get_list_note_shared(request):
             summery = full_content
 
         json_res['notes'].append({
+            'user_email': user_email,
             'note_id': share.note.id,
             'title': share.note.title,
             'created_at': share.note.created_at,
@@ -143,16 +148,13 @@ def get_list_user_shared(request):
     note_id = int(request.GET.get('note_id'))
 
     json_res = dict()
-    json_res['shares'] = []
+    json_res['users'] = []
 
     shares = Share.objects.filter(note_id=note_id)
-
     for share in shares:
-        user = User.objects.get(id=share.email)
-
-        json_res['shares'].append({
-            'user_id': share.email,
-            'user_email': user.email
+        json_res['users'].append({
+            'user_id': share.user.id,
+            'user_email': share.user.email
         })
     
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)

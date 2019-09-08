@@ -34,4 +34,4 @@ class Sentence(models.Model):
 
 class Share(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    email = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

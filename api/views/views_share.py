@@ -10,26 +10,24 @@ from api.utils import coerce_to_post
 def make_sharing(request):
     request_param = request.POST
     note_id = int(request.POST.get('note_id'))
-    user_email = str(request.POST.get('user_email'))
+    email = str(request.POST.get('email'))
+    user = User.objects.get(email=email)
 
-    user = User.objects.get(email=user_email)
-
-    share = Share.objects.create(
+    Share.objects.create(
         note_id=note_id,
-        email=user.id
+        user_id=user.id
     )
-    json_res = dict()
-    json_res['share_id'] = share.id
 
-    log(request=request, status_code=201, request_param=request_param, json_res=json_res)
-    return JsonResponse(json_res, status=201)
+    log(request=request, status_code=201, request_param=request_param)
+    return HttpResponse(status=201)
 
 def delete_sharing(request):
     coerce_to_post(request)
     request_param = request.DELETE
     note_id = int(request.DELETE.get('note_id'))
+    user_id = int(request.DELETE.get('user_id'))
     
-    Share.objects.filter(note_id=note_id).delete()
+    Share.objects.filter(note_id=note_id, user_id=user_id).delete()
 
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
