@@ -83,10 +83,7 @@ def get_list_directory(request):
 
 def get_list_note_by_directory(request):
     request_param = request.GET
-    user_id = int(request.GET.get('user_id'))
     directory_id = int(request.GET.get('directory_id'))
-    user = User.objects.get(id=user_id)
-    user_email = user.email
 
     json_res = dict()
     json_res['notes'] = []
@@ -101,7 +98,7 @@ def get_list_note_by_directory(request):
             summery = full_content
         
         json_res['notes'].append({
-            'user_email': user_email,
+            'user_email': note.user.email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
