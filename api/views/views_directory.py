@@ -24,6 +24,7 @@ def create_directory(request):
 def delete_directory(request):
     coerce_to_post(request)
     request_param = request.DELETE
+    
     directory_id = int(request.DELETE.get('directory_id'))
     directory = Directory.objects.get(id=directory_id)
 

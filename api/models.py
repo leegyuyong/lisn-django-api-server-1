@@ -3,7 +3,7 @@ from django.db import models
 class User(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=320)
-    picture_url = models.CharField(max_length=320)              # Google 서버에 저장된
+    picture_url = models.CharField(max_length=320, null=True)              # Google 서버에 저장된
 
 class Directory(models.Model):                                  # Directory DB 추가
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -31,3 +31,7 @@ class Sentence(models.Model):
     started_at = models.IntegerField()
     ended_at = models.IntegerField()
     content = models.TextField()
+
+class Share(models.Model):
+    note = models.ForeignKey(Note, on_delete=models.CASCADE)
+    email = models.IntegerField()

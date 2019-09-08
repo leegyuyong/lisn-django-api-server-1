@@ -5,7 +5,7 @@ import re
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
-from api.models import User, Note, Directory
+from api.models import User, Note, Directory, Share
 
 def remove_tag(content):
    cleanr =re.compile('<.*?>')
@@ -109,6 +109,55 @@ def get_list_note(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+def get_list_shared(request):
+    request_param = request.GET
+    user_id = int(request.GET.get('user_id'))
+
+    json_res = dict()
+    json_res['shares'] = []
+
+    shares = Share.objects.filter(email=user_id)
+
+    for share in shares:
+        full_content = remove_tag(share.note.content)
+        summery = ''
+        if len(full_content) > 20:
+            summery = full_content[:20]
+        else:
+            summery = full_content
+
+        json_res['shares'].append({
+            'note_id': share.note.id,
+            'title': share.note.title,
+            'created_at': share.note.created_at,
+            'updated_at': share.note.updated_at,
+            'summery': summery
+        })
+        
+     
+    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
+    return JsonResponse(json_res)
+
+def get_shared_user(request):
+    request_param = request.GET
+    note_id = int(request.GET.get('note_id'))
+
+    json_res = dict()
+    json_res['shares'] = []
+
+    shares = Share.objects.filter(note_id=note_id)
+
+    for share in shares:
+        user = User.objects.get(id=share.email)
+
+        json_res['shares'].append({
+            'user_id': share.email,
+            'user_email': user.email
+        })
+    
+    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
+    return JsonResponse(json_res)
+
 def api_list_note_all(request):
     try:
         if request.method == 'GET':
@@ -149,6 +198,30 @@ def api_list_note(request):
     try:
         if request.method == 'GET':
             return get_list_note(request)
+        else:
+            log(request=request, status_code=405)
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        log(request=request, status_code=400)
+        return HttpResponse(status=400)
+
+def api_shared_list(request):
+    try:
+        if request.method == 'GET':
+            return get_list_shared(request)
+        else:
+            log(request=request, status_code=405)
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        log(request=request, status_code=400)
+        return HttpResponse(status=400)
+
+def api_shared_user(request):
+    try:
+        if request.method == 'GET':
+            return get_shared_user(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)

@@ -14,4 +14,7 @@ urlpatterns = [
     path('directory', views.views_directory.api_directory, name='api_directory'),                             # directory 생성, 수정, 삭제
     path('profile', views.views_profile.api_profile, name='api_profile'),                                   # profile 정보
     path('list/note', views.views_list.api_list_note, name='api_list_note'),                                # 특정 directory의 note list 반환
+    path('note/shared', views.views_share.api_note_shared, name='api_note_shared'),                         # note 공유
+    path('list/note/shared', views.views_list.api_shared_list, name='api_shared_list'),                     # 공유된 note list 반환
+    path('list/user/shared', views.views_list.api_shared_user, name='api_shared_user'),                     # 공유된 user list 반환
 ]
