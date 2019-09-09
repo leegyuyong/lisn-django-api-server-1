@@ -56,7 +56,7 @@ def move_to_directory(request):
     directory_id = int(request.PUT.get('directory_id'))
 
     note = Note.objects.get(id=note_id)
-    note.directory.id = directory_id
+    note.directory_id = directory_id
     note.save()
 
     log(request=request, status_code=200, request_param=request_param)
