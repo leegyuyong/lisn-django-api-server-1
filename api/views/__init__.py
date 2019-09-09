@@ -6,3 +6,4 @@ from .views_token import *
 from .views_trash import *
 from .views_directory import *
 from .views_profile import *
+from .views_share import *
