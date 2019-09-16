@@ -17,4 +17,6 @@ urlpatterns = [
     path('note/shared', views.views_share.api_note_shared, name='api_note_shared'),                         # note 공유
     path('list/note/shared', views.views_list.api_list_note_shared, name='api_list_note_shared'),                     # 공유된 note list 반환
     path('list/user/shared', views.views_list.api_list_user_shared, name='api_list_user_shared'),                     # 공유된 user list 반환
+    #path('note/posted', views.views_post.api_note_posted, name='api_note_posted'),                          # note posting
+    path('directory/trash', views.views_trash.api_directory_trash, name='api_directory_trash'),          # directory+note 삭제
 ]
