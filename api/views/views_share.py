@@ -12,14 +12,17 @@ def make_sharing(request):
     note_id = int(request.POST.get('note_id'))
     email = str(request.POST.get('email'))
     user = User.objects.get(email=email)
+    share = Share.objects.filter(note_id=note_id, user_id=user.id)
 
-    Share.objects.create(
+    if share.exists():
+        return HttpResponse('Already Exist')
+    else:
+        Share.objects.create(
         note_id=note_id,
         user_id=user.id
-    )
-
-    log(request=request, status_code=201, request_param=request_param)
-    return HttpResponse(status=201)
+        )
+        log(request=request, status_code=201, request_param=request_param)
+        return HttpResponse(status=201)
 
 def delete_sharing(request):
     coerce_to_post(request)
