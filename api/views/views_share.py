@@ -15,7 +15,7 @@ def make_sharing(request):
     share = Share.objects.filter(note_id=note_id, user_id=user.id)
 
     if share.exists():
-        return HttpResponse('Already Exist', status=201)
+        return HttpResponse('Already Exist', status=400)
     else:
         Share.objects.create(
         note_id=note_id,
