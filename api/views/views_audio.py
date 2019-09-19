@@ -37,7 +37,8 @@ def get_audio_data_url(request):
     audio = Audio.objects.get(id=audio_id)
     
     json_res = dict()
-    json_res['data_url'] = create_presigned_url_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
+    # data_url -> audio_url
+    json_res['audio_url'] = create_presigned_url_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
 
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
