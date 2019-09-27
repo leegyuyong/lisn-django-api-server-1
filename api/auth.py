@@ -6,7 +6,7 @@ import jwt
 from django.http import HttpResponse, JsonResponse, QueryDict
 
 from config.settings import JWT_SECRET_KEY
-from api.models import Note, Directory, Audio, Sentence
+from api.models import Note, Directory, Audio, Sentence, Share
 from api.utils import coerce_to_post
 
 def extract_id(request, target):
@@ -53,6 +53,20 @@ def is_valid_sentence_id(request, sentence_id):
     sentence = Sentence.objects.get(id=sentence_id)
     user_id = sentence.user.id
     return is_valid_user_id(request, user_id)
+
+def is_valid_note_id_shared(request, note_id):
+    auth = request.META['HTTP_AUTHORIZATION']
+    access_token = auth.split()[1]
+    byte_access_token = access_token.encode('utf-8')
+    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+
+    user_id = int(payload['user_id'])
+
+    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    if share.exists():
+        return True
+    else:
+        return False
 
 def auth_user_id(api):
     def valid_api(*args, **kwargs):
@@ -140,6 +154,25 @@ def auth_sentence_id(api):
                 return HttpResponse(status=405)
 
             if is_valid_sentence_id(request, sentence_id) == True:
+                return api(request)
+            else:
+                log(request=request, status_code=401)
+                return HttpResponse(status=401)
+        except:
+            log(request=request, status_code=401)
+            return HttpResponse(status=401)
+    return valid_api
+
+def auth_note_id_shared():
+    def valid_api(*args, **kwargs):
+        request = args[0]
+        try:
+            note_id = extract_id(request, 'note_id')
+            if note_id == -1:
+                log(request=request, status_code=405)
+                return HttpResponse(status=405)
+
+            if is_valid_note_id_shared(request, note_id) == True:
                 return api(request)
             else:
                 log(request=request, status_code=401)
