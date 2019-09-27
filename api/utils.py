@@ -1,4 +1,3 @@
-
 def coerce_to_post(request):
     if hasattr(request, 'is_coerced'):
         return

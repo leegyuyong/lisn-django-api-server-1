@@ -24,10 +24,7 @@ def create_presigned_url_s3(object_name, expiration=3600):
     bucket = settings.AWS_S3_BUCKET
     s3_client = boto3.client('s3')
     try:
-        url = s3_client.generate_presigned_url('get_object',
-                                                    Params={'Bucket': bucket,
-                                                            'Key': object_name},
-                                                    ExpiresIn=expiration)
+        url = s3_client.generate_presigned_url('get_object', Params={'Bucket': bucket, 'Key': object_name}, ExpiresIn=expiration)
     except:
         return ''
     return url
