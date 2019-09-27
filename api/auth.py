@@ -55,6 +55,10 @@ def is_valid_sentence_id(request, sentence_id):
     return is_valid_user_id(request, user_id)
 
 def is_valid_note_id_shared(request, note_id):
+    if is_valid_note_id(request, note_id):
+        return True
+
+    # Check if this person is shared
     auth = request.META['HTTP_AUTHORIZATION']
     access_token = auth.split()[1]
     byte_access_token = access_token.encode('utf-8')
