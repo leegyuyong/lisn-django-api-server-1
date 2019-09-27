@@ -7,4 +7,3 @@ from .views_trash import *
 from .views_directory import *
 from .views_profile import *
 from .views_share import *
-from .views_post import *
