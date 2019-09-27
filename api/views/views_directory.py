@@ -6,7 +6,9 @@ from django.conf import settings
 
 from api.models import User, Note, Directory
 from api.utils import coerce_to_post
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
+@auth_user_id
 def create_directory(request):
     request_param = request.POST
     user_id = int(request.POST.get('user_id'))
@@ -21,6 +23,7 @@ def create_directory(request):
     log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
+@auth_directory_id
 def delete_directory(request):
     coerce_to_post(request)
     request_param = request.DELETE
@@ -33,6 +36,7 @@ def delete_directory(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@auth_directory_id
 def update_directory(request):
     coerce_to_post(request)
     request_param = request.PUT
@@ -48,6 +52,8 @@ def update_directory(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@auth_note_id
+@auth_directory_id
 def move_to_directory(request):
     coerce_to_post(request)
     request_param = request.PUT
@@ -62,6 +68,7 @@ def move_to_directory(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@auth_note_id
 def move_to_null_directory(request):
     coerce_to_post(request)
     request_param = request.DELETE

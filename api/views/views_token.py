@@ -12,6 +12,7 @@ from django.http import HttpResponse, JsonResponse
 from api.models import User
 from api.utils import coerce_to_post
 from config.settings import JWT_SECRET_KEY
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
 CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
 

@@ -5,7 +5,9 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.models import Audio, Sentence
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
+@auth_audio_id
 def create_sentence(request):
     request_param = request.POST
     index = int(request.POST.get('index'))

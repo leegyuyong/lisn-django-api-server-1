@@ -6,7 +6,9 @@ from django.conf import settings
 
 from api.utils import coerce_to_post
 from api.models import Note
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
+@auth_note_id
 def make_trash(request):
     coerce_to_post(request)
     request_param = request.PUT
@@ -19,6 +21,7 @@ def make_trash(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@auth_directory_id
 def delete_directory_note(request):
     coerce_to_post(request)
     request_param = request.PUT
