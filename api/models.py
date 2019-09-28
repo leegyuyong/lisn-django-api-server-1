@@ -5,7 +5,7 @@ class User(models.Model):
     email = models.CharField(max_length=320)
     picture_url = models.CharField(max_length=320, null=True)              # Google 서버에 저장된
 
-class Directory(models.Model):                                  # Directory DB 추가
+class Directory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
 
