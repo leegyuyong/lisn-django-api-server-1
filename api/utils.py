@@ -1,5 +1,6 @@
-
 def coerce_to_post(request):
+    if hasattr(request, 'is_coerced'):
+        return
     if request.method == 'PUT' or request.method == 'DELETE':
         method = request.method
         if hasattr(request, '_post'):
@@ -17,3 +18,4 @@ def coerce_to_post(request):
             request.PUT = request.POST
         elif request.method == 'DELETE':
             request.DELETE = request.POST
+        request.is_coerced = True

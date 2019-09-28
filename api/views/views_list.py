@@ -6,12 +6,14 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.models import User, Note, Directory, Share
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
 def remove_tag(content):
    cleanr =re.compile('<.*?>')
    cleantext = re.sub(cleanr, '', content)
    return cleantext
 
+@auth_user_id
 def get_list_note_all(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
@@ -42,6 +44,7 @@ def get_list_note_all(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@auth_user_id
 def get_list_note_trash(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
@@ -64,6 +67,7 @@ def get_list_note_trash(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@auth_user_id
 def get_list_directory(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
@@ -81,6 +85,7 @@ def get_list_directory(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@auth_directory_id
 def get_list_note_by_directory(request):
     request_param = request.GET
     directory_id = int(request.GET.get('directory_id'))
@@ -109,6 +114,7 @@ def get_list_note_by_directory(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@auth_user_id
 def get_list_note_shared(request):
     request_param = request.GET
     user_id = int(request.GET.get('user_id'))
@@ -140,6 +146,7 @@ def get_list_note_shared(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@auth_note_id
 def get_list_user_shared(request):
     request_param = request.GET
     note_id = int(request.GET.get('note_id'))

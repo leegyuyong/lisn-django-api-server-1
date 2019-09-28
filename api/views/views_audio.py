@@ -7,7 +7,9 @@ from django.utils import timezone
 
 from api.models import Note, Audio
 from api.s3_client import upload_file_to_s3, create_presigned_url_s3
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
+@auth_note_id
 def upload_audio_data(request):
     request_param = request.POST
     note_id = int(request.POST.get('note_id'))
@@ -31,6 +33,7 @@ def upload_audio_data(request):
     log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
+@auth_audio_id
 def get_audio_data_url(request):
     request_param = request.GET
     audio_id = int(request.GET.get('audio_id'))

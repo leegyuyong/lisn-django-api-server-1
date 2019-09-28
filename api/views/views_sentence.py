@@ -5,8 +5,10 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.models import Audio, Sentence
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 from api.utils import coerce_to_post
 
+@auth_sentence_id
 def get_sentence_info(request):
     request_param = request.GET
     sentence_id = int(request.GET.get('sentence_id'))
@@ -22,6 +24,7 @@ def get_sentence_info(request):
     log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@auth_audio_id
 def create_sentence(request):
     request_param = request.POST
     index = int(request.POST.get('index'))
@@ -46,6 +49,7 @@ def create_sentence(request):
     log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
+@auth_sentence_id
 def update_sentence(request):
     coerce_to_post(request)
     request_param = request.PUT
@@ -60,6 +64,7 @@ def update_sentence(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@auth_sentence_id
 def delete_sentence(request):
     coerce_to_post(request)
     request_param = request.DELETE

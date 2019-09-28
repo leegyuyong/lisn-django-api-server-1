@@ -6,7 +6,9 @@ from django.conf import settings
 
 from api.models import User, Note, Share
 from api.utils import coerce_to_post
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
 
+@auth_note_id
 def make_sharing(request):
     request_param = request.POST
     note_id = int(request.POST.get('note_id'))
@@ -24,6 +26,7 @@ def make_sharing(request):
         log(request=request, status_code=201, request_param=request_param)
         return HttpResponse(status=201)
 
+@auth_note_id
 def delete_sharing(request):
     coerce_to_post(request)
     request_param = request.DELETE
