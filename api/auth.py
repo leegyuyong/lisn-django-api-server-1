@@ -167,7 +167,7 @@ def auth_sentence_id(api):
             return HttpResponse(status=401)
     return valid_api
 
-def auth_note_id_shared():
+def auth_note_id_shared(api):
     def valid_api(*args, **kwargs):
         request = args[0]
         try:
