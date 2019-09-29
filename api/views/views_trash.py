@@ -26,10 +26,10 @@ def delete_directory_note(request):
     coerce_to_post(request)
     request_param = request.PUT
     directory_id = int(request.PUT.get('directory_id'))
-    note = Note.objects.filter(directory_id=directory_id)
-
-    note.is_trash = True
-    note.save()
+    notes = Note.objects.filter(directory_id=directory_id)
+    for note in notes:
+        note.is_trash = True
+        note.save()
 
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
