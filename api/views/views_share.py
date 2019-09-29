@@ -33,7 +33,8 @@ def delete_sharing(request):
     note_id = int(request.DELETE.get('note_id'))
     user_id = int(request.DELETE.get('user_id'))
     
-    Share.objects.filter(note_id=note_id, user_id=user_id).delete()
+    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    share.delete()
 
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
@@ -42,7 +43,7 @@ def api_note_shared(request):
     try:
         if request.method == 'POST':
             return make_sharing(request)
-        elif request.mothod == 'DELETE':
+        elif request.method == 'DELETE':
             return delete_sharing(request)
         else:
             log(request=request, status_code=405)
