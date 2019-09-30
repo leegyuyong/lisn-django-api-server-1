@@ -21,6 +21,19 @@ def make_trash(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@auth_note_id
+def cancle_trash(request):
+    coerce_to_post(request)
+    request_param = request.DELETE
+    note_id = int(request.DELETE.get('note_id'))
+    note = Note.objects.get(id=note_id)
+
+    note.is_trash = False
+    note.save()
+
+    log(request=request, status_code=200, request_param=request_param)
+    return HttpResponse(status=200)
+
 @auth_directory_id
 def delete_directory_note(request):
     coerce_to_post(request)
@@ -38,6 +51,8 @@ def api_note_trash(request):
     try:
         if request.method == 'PUT':
             return make_trash(request)
+        elif request.method == 'DELETE':
+            return cancle_trash(request)
         else:
             log(request=request, status_code=405)
             return HttpResponse(status=405)
