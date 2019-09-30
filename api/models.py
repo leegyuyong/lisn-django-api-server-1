@@ -20,6 +20,7 @@ class Note(models.Model):
     content = models.TextField()
     is_trash = models.BooleanField(default=False)
     is_posted = models.BooleanField(default=False)
+    is_edited = models.BooleanField(default=False)
 
 class Audio(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
