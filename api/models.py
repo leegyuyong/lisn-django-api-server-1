@@ -11,7 +11,7 @@ class Directory(models.Model):
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True) # Directory 삭제 시 null로 초기화
+    directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField()
@@ -20,7 +20,7 @@ class Note(models.Model):
     content = models.TextField()
     is_trash = models.BooleanField(default=False)
     is_posted = models.BooleanField(default=False)
-    is_edited = models.BooleanField(default=False)
+    edit_user = models.IntegerField(null=True)
 
 class Audio(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)

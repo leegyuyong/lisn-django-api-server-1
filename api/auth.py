@@ -72,6 +72,23 @@ def is_valid_note_id_shared(request, note_id):
     else:
         return False
 
+def is_valid_note_id_edited(request, note_id):
+    # Check ohter user already edited
+    auth = request.META['HTTP_AUTHORIZATION']
+    access_token = auth.split()[1]
+    byte_access_token = access_token.encode('utf-8')
+    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+
+    user_id = int(payload['user_id'])
+
+    note = Note.objects.get(id=note_id)
+    if note.edit_user == user_id:
+        return True
+    elif note.edit_user == None:
+        return True
+    else:
+        return False
+
 def auth_user_id(api):
     def valid_api(*args, **kwargs):
         request = args[0]
@@ -177,6 +194,25 @@ def auth_note_id_shared(api):
                 return HttpResponse(status=405)
 
             if is_valid_note_id_shared(request, note_id) == True:
+                return api(request)
+            else:
+                log(request=request, status_code=401)
+                return HttpResponse(status=401)
+        except:
+            log(request=request, status_code=401)
+            return HttpResponse(status=401)
+    return valid_api
+
+def auth_note_id_edit(api):
+    def valid_api(*args, **kwargs):
+        request = args[0]
+        try:
+            note_id = extract_id(request, 'note_id')
+            if note_id == -1:
+                log(request=request, status_code=405)
+                return HttpResponse(status=405)
+
+            if is_valid_note_id_edited(request, note_id) == True:
                 return api(request)
             else:
                 log(request=request, status_code=401)
