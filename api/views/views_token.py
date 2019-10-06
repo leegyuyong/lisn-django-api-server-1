@@ -17,12 +17,10 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
 
 def get_token(request):
-    request_param = request.POST
     token = request.POST.get('google_token')
     user_info = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 
     if user_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-        log(request=request, status_code=400, request_param=request_param)
         return HttpResponse(status=400)
     
     user_name = user_info['name']
@@ -49,17 +47,15 @@ def get_token(request):
     json_res['user_id'] = user.id
     json_res['access_token'] = access_token
 
-    log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
+@log
 def api_token_google(request):
     try:
         if request.method == 'POST':
             return get_token(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)

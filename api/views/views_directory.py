@@ -10,7 +10,6 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 
 @auth_user_id
 def create_directory(request):
-    request_param = request.POST
     user_id = int(request.POST.get('user_id'))
     
     directory = Directory.objects.create(
@@ -20,26 +19,22 @@ def create_directory(request):
     json_res = dict()
     json_res['directory_id'] = directory.id
 
-    log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
 @auth_directory_id
 def delete_directory(request):
     coerce_to_post(request)
-    request_param = request.DELETE
     
     directory_id = int(request.DELETE.get('directory_id'))
     directory = Directory.objects.get(id=directory_id)
 
     directory.delete()
     
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_directory_id
 def update_directory(request):
     coerce_to_post(request)
-    request_param = request.PUT
 
     directory_id = int(request.PUT.get('directory_id'))
     name = str(request.PUT.get('name'))
@@ -49,14 +44,12 @@ def update_directory(request):
     directory.name = name
     directory.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_note_id
 @auth_directory_id
 def move_to_directory(request):
     coerce_to_post(request)
-    request_param = request.PUT
 
     note_id = int(request.PUT.get('note_id'))
     directory_id = int(request.PUT.get('directory_id'))
@@ -65,13 +58,11 @@ def move_to_directory(request):
     note.directory_id = directory_id
     note.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_note_id
 def move_to_null_directory(request):
     coerce_to_post(request)
-    request_param = request.DELETE
 
     note_id = int(request.DELETE.get('note_id'))
 
@@ -79,9 +70,9 @@ def move_to_null_directory(request):
     note.directory = None
     note.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@log
 def api_directory(request):
     try:
         if request.method == 'POST':
@@ -91,13 +82,12 @@ def api_directory(request):
         elif request.method == 'DELETE':
             return delete_directory(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
 
+@log
 def api_note_directory(request):
     try:
         if request.method == 'PUT':
@@ -105,9 +95,7 @@ def api_note_directory(request):
         elif request.method == 'DELETE':
             return move_to_null_directory(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)

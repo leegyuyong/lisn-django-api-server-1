@@ -10,7 +10,6 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 
 @auth_note_id
 def make_sharing(request):
-    request_param = request.POST
     note_id = int(request.POST.get('note_id'))
     email = str(request.POST.get('email'))
     user = User.objects.get(email=email)
@@ -23,22 +22,20 @@ def make_sharing(request):
         note_id=note_id,
         user_id=user.id
         )
-        log(request=request, status_code=201, request_param=request_param)
         return HttpResponse(status=201)
 
 @auth_note_id
 def delete_sharing(request):
     coerce_to_post(request)
-    request_param = request.DELETE
     note_id = int(request.DELETE.get('note_id'))
     user_id = int(request.DELETE.get('user_id'))
     
     share = Share.objects.filter(note_id=note_id, user_id=user_id)
     share.delete()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@log
 def api_note_shared(request):
     try:
         if request.method == 'POST':
@@ -46,9 +43,7 @@ def api_note_shared(request):
         elif request.method == 'DELETE':
             return delete_sharing(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)

@@ -11,7 +11,6 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 
 @auth_note_id
 def upload_audio_data(request):
-    request_param = request.POST
     note_id = int(request.POST.get('note_id'))
     note = Note.objects.get(id=note_id)
     user_id = note.user.id
@@ -30,12 +29,10 @@ def upload_audio_data(request):
     json_res = dict()
     json_res['audio_id'] = audio.id
     
-    log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
 @auth_audio_id
 def get_audio_data_url(request):
-    request_param = request.GET
     audio_id = int(request.GET.get('audio_id'))
     audio = Audio.objects.get(id=audio_id)
     
@@ -43,9 +40,9 @@ def get_audio_data_url(request):
     # data_url -> audio_url
     json_res['audio_url'] = create_presigned_url_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
 
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@log
 def api_note_audio(request):
     try:
         if request.method == 'GET':
@@ -53,9 +50,7 @@ def api_note_audio(request):
         elif request.method == 'POST':
             return upload_audio_data(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)

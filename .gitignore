@@ -8,3 +8,5 @@ api/migrations/*
 lisn.log
 secret_keys.json
 static/
+reset_db.sh
+run.sh
