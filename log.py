@@ -29,6 +29,14 @@ def extract_content(request):
     else:
         return dict()
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 def log(api):
     global logger
 
@@ -40,6 +48,7 @@ def log(api):
         response = api(request)
         logger.debug(
             str(request) + '\n'
+            + '<request ip> ' + str(get_client_ip(request)) + '\n'
             + '<request body> ' + str(dict(extract_content(request))) + '\n'
             + '<response status code> ' + str(response.status_code) + '\n'
             + '<response body> ' + str(response.content)[2:-1] + '\n')
