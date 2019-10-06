@@ -13,7 +13,6 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 
 @auth_note_id_shared
 def get_note_info(request):
-    request_param = request.GET
     note_id = int(request.GET.get('note_id'))
     note = Note.objects.get(id=note_id)
 
@@ -42,12 +41,10 @@ def get_note_info(request):
 
         json_res['audios'].append(json_audio)
     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
 @auth_user_id
 def create_note(request):
-    request_param = request.POST
     user_id = int(request.POST.get('user_id'))
     
     note = Note.objects.create(
@@ -64,13 +61,11 @@ def create_note(request):
     json_res = dict()
     json_res['note_id'] = note.id
 
-    log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
 @auth_note_id_shared
 def update_note(request):
     coerce_to_post(request)
-    request_param = request.PUT
 
     note_id = int(request.PUT.get('note_id'))
     title = str(request.PUT.get('title'))
@@ -101,13 +96,11 @@ def update_note(request):
     note.updated_at = timezone.now()
     note.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_note_id
 def delete_note(request):
     coerce_to_post(request)
-    request_param = request.DELETE
     note_id = int(request.DELETE.get('note_id'))
     note = Note.objects.get(id=note_id)
 
@@ -116,10 +109,10 @@ def delete_note(request):
     for audio in audios:
         delete_file_to_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
     note.delete()
-    
-    log(request=request, status_code=200, request_param=request_param)
+
     return HttpResponse(status=200)
 
+@log
 def api_note(request):
     try:
         if request.method == 'GET':
@@ -131,9 +124,7 @@ def api_note(request):
         elif request.method == 'DELETE':
             return delete_note(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
