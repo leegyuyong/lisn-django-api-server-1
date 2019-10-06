@@ -46,11 +46,15 @@ def log(api):
     def logged_api(*args, **kwargs):
         request = args[0]
         response = api(request)
-        logger.debug(
-            str(request) + '\n'
-            + '<request ip> ' + str(get_client_ip(request)) + '\n'
-            + '<request body> ' + str(dict(extract_content(request))) + '\n'
-            + '<response status code> ' + str(response.status_code) + '\n'
-            + '<response body> ' + str(response.content)[2:-1] + '\n')
-        return response
+        try:
+            logger.debug(
+                str(request) + '\n'
+                + '<request ip> ' + str(get_client_ip(request)) + '\n'
+                + '<request body> ' + str(dict(extract_content(request))) + '\n'
+                + '<response status code> ' + str(response.status_code) + '\n'
+                + '<response body> ' + str(response.content)[2:-1] + '\n')
+            return response
+        except:
+            logger.debug('logging error.\n')
+            return response
     return logged_api
