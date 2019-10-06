@@ -5,7 +5,7 @@ import jwt
 from django.http import HttpResponse, JsonResponse, QueryDict
 
 from config.settings import JWT_SECRET_KEY
-from api.models import Note, Directory, Audio, Sentence, Share
+from api.models import User, Note, Directory, Audio, Sentence, Share
 from api.utils import coerce_to_post
 
 AUTH = True
@@ -25,6 +25,7 @@ def extract_id(request, target):
         return -1
 
 def is_valid_user_id(request, user_id):
+    User.objects.get(id=user_id)
     auth = request.META['HTTP_AUTHORIZATION']
     access_token = auth.split()[1]
     byte_access_token = access_token.encode('utf-8')
