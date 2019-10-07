@@ -10,7 +10,6 @@ from api.utils import coerce_to_post
 
 @auth_sentence_id
 def get_sentence_info(request):
-    request_param = request.GET
     sentence_id = int(request.GET.get('sentence_id'))
     sentence = Sentence.objects.get(id=sentence_id)
 
@@ -20,13 +19,11 @@ def get_sentence_info(request):
     json_res['started_at'] = sentence.started_at
     json_res['ended_at'] = sentence.ended_at
     json_res['content'] = sentence.content
-    
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
+
     return JsonResponse(json_res)
 
 @auth_audio_id
 def create_sentence(request):
-    request_param = request.POST
     index = int(request.POST.get('index'))
     audio_id = int(request.POST.get('audio_id'))
     started_at = int(request.POST.get('started_at'))
@@ -46,13 +43,11 @@ def create_sentence(request):
     json_res = dict()
     json_res['sentence_id'] = sentence.id
     
-    log(request=request, status_code=201, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res, status=201)
 
 @auth_sentence_id
 def update_sentence(request):
     coerce_to_post(request)
-    request_param = request.PUT
 
     sentence_id = int(request.PUT.get('sentence_id'))
     content = str(request.PUT.get('content'))
@@ -61,22 +56,20 @@ def update_sentence(request):
     sentence.content = content
     sentence.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_sentence_id
 def delete_sentence(request):
     coerce_to_post(request)
-    request_param = request.DELETE
 
     sentence_id = int(request.DELETE.get('sentence_id'))
     sentence = Sentence.objects.get(id=sentence_id)
 
     sentence.delete()
     
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@log
 def api_note_sentence(request):
     try:
         if request.method == 'GET':
@@ -88,9 +81,7 @@ def api_note_sentence(request):
         elif request.method == 'DELETE':
             return delete_sentence(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)

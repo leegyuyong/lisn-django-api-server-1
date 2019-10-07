@@ -15,7 +15,6 @@ def remove_tag(content):
 
 @auth_user_id
 def get_list_note_all(request):
-    request_param = request.GET
     user_id = int(request.GET.get('user_id'))
     user = User.objects.get(id=user_id)
     user_email = user.email
@@ -41,12 +40,10 @@ def get_list_note_all(request):
             'summery': summery
         })
     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
 @auth_user_id
 def get_list_note_trash(request):
-    request_param = request.GET
     user_id = int(request.GET.get('user_id'))
     user = User.objects.get(id=user_id)
     user_email = user.email
@@ -64,12 +61,10 @@ def get_list_note_trash(request):
             'updated_at': note.updated_at
         })
     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
 @auth_user_id
 def get_list_directory(request):
-    request_param = request.GET
     user_id = int(request.GET.get('user_id'))
 
     json_res = dict()
@@ -82,12 +77,10 @@ def get_list_directory(request):
             'name': directory.name
         })
     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
 @auth_directory_id
 def get_list_note_by_directory(request):
-    request_param = request.GET
     directory_id = int(request.GET.get('directory_id'))
 
     json_res = dict()
@@ -111,12 +104,10 @@ def get_list_note_by_directory(request):
             'summery': summery
         })
     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
 @auth_user_id
 def get_list_note_shared(request):
-    request_param = request.GET
     user_id = int(request.GET.get('user_id'))
     user = User.objects.get(id=user_id)
     user_email = user.email
@@ -141,14 +132,11 @@ def get_list_note_shared(request):
             'updated_at': share.note.updated_at,
             'summery': summery
         })
-        
-     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
+
     return JsonResponse(json_res)
 
 @auth_note_id
 def get_list_user_shared(request):
-    request_param = request.GET
     note_id = int(request.GET.get('note_id'))
 
     json_res = dict()
@@ -161,77 +149,70 @@ def get_list_user_shared(request):
             'user_email': share.user.email
         })
     
-    log(request=request, status_code=200, request_param=request_param, json_res=json_res)
     return JsonResponse(json_res)
 
+@log
 def api_list_note_all(request):
     try:
         if request.method == 'GET':
             return get_list_note_all(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
 
+@log
 def api_list_note_trash(request):
     try:
         if request.method == 'GET':
             return get_list_note_trash(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
 
+@log
 def api_list_directory(request):
     try:
         if request.method == 'GET':
             return get_list_directory(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
 
+@log
 def api_list_note(request):
     try:
         if request.method == 'GET':
             return get_list_note_by_directory(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
 
+@log
 def api_list_note_shared(request):
     try:
         if request.method == 'GET':
             return get_list_note_shared(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
 
+@log
 def api_list_user_shared(request):
     try:
         if request.method == 'GET':
             return get_list_user_shared(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
