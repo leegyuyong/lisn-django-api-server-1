@@ -10,3 +10,5 @@ secret_keys.json
 static/
 reset_db.sh
 run.sh
+venv/
+.vscode/

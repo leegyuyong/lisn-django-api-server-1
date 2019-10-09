@@ -47,12 +47,14 @@ def log(api):
         request = args[0]
         response = api(request)
         try:
+            response_body = response.content.decode('unicode_escape')
+            response_body = response_body.replace('\"', '\'')
             logger.debug(
                 str(request) + '\n'
                 + '<request ip> ' + str(get_client_ip(request)) + '\n'
                 + '<request body> ' + str(dict(extract_content(request))) + '\n'
                 + '<response status code> ' + str(response.status_code) + '\n'
-                + '<response body> ' + str(response.content)[2:-1] + '\n')
+                + '<response body> ' + str(response_body) + '\n')
             return response
         except:
             logger.debug('logging error.\n')
