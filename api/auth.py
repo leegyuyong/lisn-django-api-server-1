@@ -8,7 +8,7 @@ from config.settings import JWT_SECRET_KEY
 from api.models import User, Note, Directory, Audio, Sentence, Share
 from api.utils import coerce_to_post
 
-AUTH = False
+AUTH = True
 
 def extract_id(request, target):
     if request.method == 'GET':
