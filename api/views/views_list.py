@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.models import User, Note, Directory, Share
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared
 
 def remove_tag(content):
    cleanr =re.compile('<.*?>')
@@ -135,7 +135,7 @@ def get_list_note_shared(request):
 
     return JsonResponse(json_res)
 
-@auth_note_id
+@auth_note_id_shared
 def get_list_user_shared(request):
     note_id = int(request.GET.get('note_id'))
 
