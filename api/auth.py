@@ -91,6 +91,63 @@ def is_valid_note_id_edited(request, note_id):
     else:
         return False
 
+def is_valid_sentence_id_shared(request, sentence_id):
+    if is_valid_sentence_id(request, sentence_id):
+        return True
+
+    # Check if this person is shared
+    auth = request.META['HTTP_AUTHORIZATION']
+    access_token = auth.split()[1]
+    byte_access_token = access_token.encode('utf-8')
+    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+
+    user_id = int(payload['user_id'])
+    sentence = Sentence.objects.get(id=sentence_id)
+    note_id = sentence.audio.note.id
+
+    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    if share.exists():
+        return True
+    else:
+        return False
+
+def is_valid_sentence_id_edited(request, sentence_id):
+    # Check ohter user already edited
+    auth = request.META['HTTP_AUTHORIZATION']
+    access_token = auth.split()[1]
+    byte_access_token = access_token.encode('utf-8')
+    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+
+    user_id = int(payload['user_id'])
+    sentence = Sentence.objects.get(id=sentence_id)
+    note_id = sentence.audio.note.id
+
+    note = Note.objects.get(id=note_id)
+    if note.edit_user == user_id:
+        return True
+    else:
+        return False
+
+def is_valid_audio_id_shared(request, audio_id):
+    if is_valid_audio_id(request, audio_id):
+        return True
+    
+    # Check if this person is shared
+    auth = request.META['HTTP_AUTHORIZATION']
+    access_token = auth.split()[1]
+    byte_access_token = access_token.encode('utf-8')
+    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+
+    user_id = int(payload['user_id'])
+    audio = Audio.objects.get(id=audio_id)
+    note_id = audio.note.id
+
+    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    if share.exists():
+        return True
+    else:
+        return False
+    
 def auth_user_id(api):
     if AUTH == False:
         return api
@@ -167,25 +224,6 @@ def auth_audio_id(api):
             return HttpResponse(status=400)
     return valid_api
 
-def auth_sentence_id(api):
-    if AUTH == False:
-        return api
-
-    def valid_api(*args, **kwargs):
-        request = args[0]
-        try:
-            sentence_id = extract_id(request, 'sentence_id')
-            if sentence_id == -1:
-                return HttpResponse(status=405)
-
-            if is_valid_sentence_id(request, sentence_id) == True:
-                return api(request)
-            else:
-                return HttpResponse(status=401)
-        except:
-            return HttpResponse(status=400)
-    return valid_api
-
 def auth_note_id_shared(api):
     if AUTH == False:
         return api
@@ -226,4 +264,61 @@ def auth_note_id_edit(api):
         except:
             log(request=request, status_code=401)
             return HttpResponse(status=401)
+    return valid_api
+
+def auth_sentence_id_shared(api):
+    if AUTH == False:
+        return api
+
+    def valid_api(*args, **kwargs):
+        request = args[0]
+        try:
+            sentence_id = extract_id(request, 'sentence_id')
+            if sentence_id == -1:
+                return HttpResponse(status=405)
+
+            if is_valid_sentence_id_shared(request, sentence_id) == True:
+                return api(request)
+            else:
+                return HttpResponse(status=401)
+        except:
+            return HttpResponse(status=400)
+    return valid_api
+
+def auth_sentence_id_edit(api):
+    if AUTH == False:
+        return api
+
+    def valid_api(*args, **kwargs):
+        request = args[0]
+        try:
+            sentence_id = extract_id(request, 'sentence_id')
+            if sentence_id == -1:
+                return HttpResponse(status=405)
+
+            if is_valid_sentence_id_edited(request, sentence_id) == True:
+                return api(request)
+            else:
+                return HttpResponse(status=401)
+        except:
+            return HttpResponse(status=400)
+    return valid_api
+
+def auth_audio_id_shared(api):
+    if AUTH == False:
+        return api
+
+    def valid_api(*args, **kwargs):
+        request = args[0]
+        try:
+            audio_id = extract_id(request, 'audio_id')
+            if audio_id == -1:
+                return HttpResponse(status=405)
+
+            if is_valid_audio_id_shared(request, audio_id) == True:
+                return api(request)
+            else:
+                return HttpResponse(status=401)
+        except:
+            return HttpResponse(status=400)
     return valid_api
