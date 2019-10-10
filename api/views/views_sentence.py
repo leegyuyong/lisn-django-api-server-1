@@ -5,10 +5,10 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.models import Audio, Sentence
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id_shared, auth_sentence_id_edit
 from api.utils import coerce_to_post
 
-@auth_sentence_id
+@auth_sentence_id_shared
 def get_sentence_info(request):
     sentence_id = int(request.GET.get('sentence_id'))
     sentence = Sentence.objects.get(id=sentence_id)
@@ -45,7 +45,8 @@ def create_sentence(request):
     
     return JsonResponse(json_res, status=201)
 
-@auth_sentence_id
+@auth_sentence_id_shared
+@auth_sentence_id_edit
 def update_sentence(request):
     coerce_to_post(request)
 
@@ -58,7 +59,8 @@ def update_sentence(request):
 
     return HttpResponse(status=200)
 
-@auth_sentence_id
+@auth_sentence_id_shared
+@auth_sentence_id_edit
 def delete_sentence(request):
     coerce_to_post(request)
 
