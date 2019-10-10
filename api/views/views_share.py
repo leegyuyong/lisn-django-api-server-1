@@ -12,6 +12,12 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 def make_sharing(request):
     note_id = int(request.POST.get('note_id'))
     email = str(request.POST.get('email'))
+
+    try:
+        User.objects.get(email=email)
+    except User.DoesNotExist:
+        return HttpResponse('No Matching Users', status=400)
+
     user = User.objects.get(email=email)
     share = Share.objects.filter(note_id=note_id, user_id=user.id)
 
