@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.models import User, Note, Directory, Share
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
 
 def remove_tag(content):
    cleanr =re.compile('<.*?>')

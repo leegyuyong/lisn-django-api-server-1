@@ -6,7 +6,7 @@ from django.conf import settings
 
 from api.utils import coerce_to_post
 from api.models import Note
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id, auth_note_id_shared, auth_note_id_edit
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared, auth_note_id_edit
 
 @auth_user_id
 @auth_note_id_shared
@@ -42,6 +42,7 @@ def read_mode(request):
     log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
+@log
 def api_note_edited(request):
     try:
         if request.method == 'PUT':

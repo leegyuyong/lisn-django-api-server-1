@@ -6,7 +6,7 @@ from django.conf import settings
 
 from api.models import User
 from api.utils import coerce_to_post
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
 
 @auth_user_id
 def get_profile_info(request):

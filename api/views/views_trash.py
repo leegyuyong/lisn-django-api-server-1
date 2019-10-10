@@ -6,7 +6,7 @@ from django.conf import settings
 
 from api.utils import coerce_to_post
 from api.models import Note
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
 
 @auth_note_id
 def make_trash(request):
