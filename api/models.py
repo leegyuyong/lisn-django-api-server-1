@@ -19,7 +19,6 @@ class Note(models.Model):
     updated_at = models.DateTimeField()
     content = models.TextField()
     is_trash = models.BooleanField(default=False)
-    is_posted = models.BooleanField(default=False)
     edit_user = models.IntegerField(null=True)
 
 class Audio(models.Model):
