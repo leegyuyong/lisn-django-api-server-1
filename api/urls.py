@@ -27,4 +27,6 @@ urlpatterns = [
     path('list/user/shared', views.views_list.api_list_user_shared, name='api_list_user_shared'),
     # directory+note 삭제
     path('directory/trash', views.views_trash.api_directory_trash, name='api_directory_trash'),
+    # note 편집
+    path('note/edited', views.views_edit.api_note_edited, name='api_note_edited'),
 ]

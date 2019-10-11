@@ -9,7 +9,7 @@ from django.utils import timezone
 from api.models import Note, Audio, Sentence
 from api.utils import coerce_to_post
 from api.s3_client import delete_file_to_s3
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id, auth_note_id_shared
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared, auth_note_id_edit
 
 @auth_note_id_shared
 def get_note_info(request):
@@ -64,6 +64,7 @@ def create_note(request):
     return JsonResponse(json_res, status=201)
 
 @auth_note_id_shared
+@auth_note_id_edit
 def update_note(request):
     coerce_to_post(request)
 
