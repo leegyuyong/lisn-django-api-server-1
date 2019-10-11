@@ -6,12 +6,18 @@ from django.conf import settings
 
 from api.models import User, Note, Share
 from api.utils import coerce_to_post
-from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
+from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared
 
-@auth_note_id
+@auth_note_id_shared
 def make_sharing(request):
     note_id = int(request.POST.get('note_id'))
     email = str(request.POST.get('email'))
+
+    try:
+        User.objects.get(email=email)
+    except User.DoesNotExist:
+        return HttpResponse('No Matching Users', status=400)
+
     user = User.objects.get(email=email)
     share = Share.objects.filter(note_id=note_id, user_id=user.id)
 
@@ -24,7 +30,8 @@ def make_sharing(request):
         )
         return HttpResponse(status=201)
 
-@auth_note_id
+@auth_user_id
+@auth_note_id_shared
 def delete_sharing(request):
     coerce_to_post(request)
     note_id = int(request.DELETE.get('note_id'))
