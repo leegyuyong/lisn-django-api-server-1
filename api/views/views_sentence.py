@@ -7,6 +7,7 @@ from django.conf import settings
 from api.models import Audio, Sentence
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_sentence_id_shared, auth_sentence_id_edit
 from api.utils import coerce_to_post
+from api.es_client.es_client import es
 
 @auth_sentence_id_shared
 def get_sentence_info(request):
@@ -43,6 +44,13 @@ def create_sentence(request):
     json_res = dict()
     json_res['sentence_id'] = sentence.id
     
+    # elasticsearch document create
+    es_document = dict()
+    es_document['sentence_id'] = sentence.id
+    es_document['note_id'] = audio.note.id
+    es_document['content'] = sentence.content
+    es.create(index='sentence', body=es_document, id=sentence.id)
+
     return JsonResponse(json_res, status=201)
 
 @auth_sentence_id_shared
@@ -57,6 +65,13 @@ def update_sentence(request):
     sentence.content = content
     sentence.save()
 
+    # elasticsearch document update
+    es_document = dict()
+    es_document['sentence_id'] = sentence.id
+    es_document['note_id'] = audio.note.id
+    es_document['content'] = sentence.content
+    es.update(index='sentence', body={'doc':es_document}, id=sentence.id)
+
     return HttpResponse(status=200)
 
 @auth_sentence_id_shared
@@ -69,6 +84,9 @@ def delete_sentence(request):
 
     sentence.delete()
     
+    # elasticsearch document delete
+    es.delete(index='sentence', id=sentence_id)
+
     return HttpResponse(status=200)
 
 @log

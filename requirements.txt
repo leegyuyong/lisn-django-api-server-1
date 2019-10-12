@@ -17,6 +17,7 @@ constantly==15.1.0
 Django==2.0.13
 django-cors-headers==3.0.2
 docutils==0.14
+elasticsearch==7.0.5
 future==0.17.1
 google-api-python-client==1.7.11
 google-auth==1.6.3
