@@ -24,14 +24,17 @@ def extract_id(request, target):
     else:
         return -1
 
-def is_valid_user_id(request, user_id):
-    User.objects.get(id=user_id)
+def extract_user_id_from_jwt(request):
     auth = request.META['HTTP_AUTHORIZATION']
     access_token = auth.split()[1]
     byte_access_token = access_token.encode('utf-8')
     payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+    return int(payload['user_id'])
 
-    if int(payload['user_id']) == user_id:
+def is_valid_user_id(request, user_id):
+    User.objects.get(id=user_id)
+
+    if extract_user_id_from_jwt(request) == user_id:
         return True
     else:
         return False
@@ -61,14 +64,9 @@ def is_valid_note_id_shared(request, note_id):
         return True
 
     # Check if this person is shared
-    auth = request.META['HTTP_AUTHORIZATION']
-    access_token = auth.split()[1]
-    byte_access_token = access_token.encode('utf-8')
-    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
+    user_id_jwt = extract_user_id_from_jwt(request)
 
-    user_id = int(payload['user_id'])
-
-    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    share = Share.objects.filter(note_id=note_id, user_id=user_id_jwt)
     if share.exists():
         return True
     else:
@@ -76,15 +74,10 @@ def is_valid_note_id_shared(request, note_id):
 
 def is_valid_note_id_edited(request, note_id):
     # Check ohter user already edited
-    auth = request.META['HTTP_AUTHORIZATION']
-    access_token = auth.split()[1]
-    byte_access_token = access_token.encode('utf-8')
-    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
-
-    user_id = int(payload['user_id'])
-
     note = Note.objects.get(id=note_id)
-    if note.edit_user == user_id:
+    user_id_jwt = extract_user_id_from_jwt(request)
+    
+    if note.edit_user == user_id_jwt:
         return True
     elif note.edit_user == None:
         return True
@@ -96,16 +89,11 @@ def is_valid_sentence_id_shared(request, sentence_id):
         return True
 
     # Check if this person is shared
-    auth = request.META['HTTP_AUTHORIZATION']
-    access_token = auth.split()[1]
-    byte_access_token = access_token.encode('utf-8')
-    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
-
-    user_id = int(payload['user_id'])
     sentence = Sentence.objects.get(id=sentence_id)
     note_id = sentence.audio.note.id
+    user_id_jwt = extract_user_id_from_jwt(request)
 
-    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    share = Share.objects.filter(note_id=note_id, user_id=user_id_jwt)
     if share.exists():
         return True
     else:
@@ -113,17 +101,12 @@ def is_valid_sentence_id_shared(request, sentence_id):
 
 def is_valid_sentence_id_edited(request, sentence_id):
     # Check ohter user already edited
-    auth = request.META['HTTP_AUTHORIZATION']
-    access_token = auth.split()[1]
-    byte_access_token = access_token.encode('utf-8')
-    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
-
-    user_id = int(payload['user_id'])
     sentence = Sentence.objects.get(id=sentence_id)
     note_id = sentence.audio.note.id
-
     note = Note.objects.get(id=note_id)
-    if note.edit_user == user_id:
+    user_id_jwt = extract_user_id_from_jwt(request)
+
+    if note.edit_user == user_id_jwt:
         return True
     else:
         return False
@@ -133,16 +116,11 @@ def is_valid_audio_id_shared(request, audio_id):
         return True
     
     # Check if this person is shared
-    auth = request.META['HTTP_AUTHORIZATION']
-    access_token = auth.split()[1]
-    byte_access_token = access_token.encode('utf-8')
-    payload = jwt.decode(byte_access_token, JWT_SECRET_KEY, algorithm='HS256')
-
-    user_id = int(payload['user_id'])
     audio = Audio.objects.get(id=audio_id)
     note_id = audio.note.id
+    user_id_jwt = extract_user_id_from_jwt(request)
 
-    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    share = Share.objects.filter(note_id=note_id, user_id=user_id_jwt)
     if share.exists():
         return True
     else:
@@ -163,6 +141,8 @@ def auth_user_id(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
@@ -182,6 +162,8 @@ def auth_note_id(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
@@ -201,6 +183,8 @@ def auth_directory_id(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
@@ -220,6 +204,8 @@ def auth_audio_id(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
@@ -239,9 +225,10 @@ def auth_note_id_shared(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
-        except:
-            log(request=request, status_code=401)
+        except jwt.ExpiredSignatureError:
             return HttpResponse(status=401)
+        except:
+            return HttpResponse(status=400)
     return valid_api
 
 def auth_note_id_edit(api):
@@ -253,17 +240,16 @@ def auth_note_id_edit(api):
         try:
             note_id = extract_id(request, 'note_id')
             if note_id == -1:
-                log(request=request, status_code=405)
                 return HttpResponse(status=405)
 
             if is_valid_note_id_edited(request, note_id) == True:
                 return api(request)
             else:
-                log(request=request, status_code=401)
                 return HttpResponse(status=401)
-        except:
-            log(request=request, status_code=401)
+        except jwt.ExpiredSignatureError:
             return HttpResponse(status=401)
+        except:
+            return HttpResponse(status=400)
     return valid_api
 
 def auth_sentence_id_shared(api):
@@ -281,6 +267,8 @@ def auth_sentence_id_shared(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
@@ -300,6 +288,8 @@ def auth_sentence_id_edit(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
@@ -319,6 +309,8 @@ def auth_audio_id_shared(api):
                 return api(request)
             else:
                 return HttpResponse(status=401)
+        except jwt.ExpiredSignatureError:
+            return HttpResponse(status=401)
         except:
             return HttpResponse(status=400)
     return valid_api
