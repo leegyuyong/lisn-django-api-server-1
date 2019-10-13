@@ -48,6 +48,7 @@ def create_sentence(request):
     es_document = dict()
     es_document['sentence_id'] = sentence.id
     es_document['note_id'] = audio.note.id
+    es_document['user_id'] = audio.user.id
     es_document['content'] = sentence.content
     es.create(index='sentence', body=es_document, id=sentence.id)
 
@@ -67,8 +68,6 @@ def update_sentence(request):
 
     # elasticsearch document update
     es_document = dict()
-    es_document['sentence_id'] = sentence.id
-    es_document['note_id'] = audio.note.id
     es_document['content'] = sentence.content
     es.update(index='sentence', body={'doc':es_document}, id=sentence.id)
 

@@ -108,8 +108,6 @@ def update_note(request):
 
     # elasticsearch document update
     es_document = dict()
-    es_document['note_id'] = note.id
-    es_document['user_id'] = note.user.id
     es_document['title'] = note.title
     es_document['content'] = note.content
     es.update(index='note', body={'doc':es_document}, id=note.id)

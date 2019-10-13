@@ -1,17 +1,12 @@
 from log import log
 import sys
-import re
 
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
+from api.utils import remove_tag
 from api.models import User, Note, Directory, Share
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared
-
-def remove_tag(content):
-   cleanr =re.compile('<.*?>')
-   cleantext = re.sub(cleanr, '', content)
-   return cleantext
 
 @auth_user_id
 def get_list_note_all(request):

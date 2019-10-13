@@ -8,3 +8,4 @@ from .views_directory import *
 from .views_profile import *
 from .views_share import *
 from .views_edit import *
+from .views_search import *

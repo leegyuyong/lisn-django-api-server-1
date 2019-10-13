@@ -64,6 +64,9 @@ es.indices.create(
                     "note_id": {
                         "type": "long"
                     },
+                    "user_id": {
+                        "type": "long"
+                    },
                     "content": {
                         "type": "text",
                         "analyzer": "korean_nori"
