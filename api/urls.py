@@ -29,4 +29,8 @@ urlpatterns = [
     path('directory/trash', views.views_trash.api_directory_trash, name='api_directory_trash'),
     # note 편집
     path('note/edited', views.views_edit.api_note_edited, name='api_note_edited'),
+    path('search/title', views.views_search.api_search_title, name='api_search_title'),
+    path('search/content', views.views_search.api_search_content, name='api_search_content'),
+    path('search/sentence', views.views_search.api_search_sentence, name='api_search_sentence'),
+    path('search/note/sentence', views.views_search.api_search_note_sentence, name='api_search_note_sentence'),
 ]

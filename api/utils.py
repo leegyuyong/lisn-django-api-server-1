@@ -1,3 +1,5 @@
+import re
+
 def coerce_to_post(request):
     if hasattr(request, 'is_coerced'):
         return
@@ -19,3 +21,8 @@ def coerce_to_post(request):
         elif request.method == 'DELETE':
             request.DELETE = request.POST
         request.is_coerced = True
+
+def remove_tag(content):
+   cleanr =re.compile('<.*?>')
+   cleantext = re.sub(cleanr, '', content)
+   return cleantext
