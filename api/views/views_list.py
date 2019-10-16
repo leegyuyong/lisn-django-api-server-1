@@ -20,11 +20,11 @@ def get_list_note_all(request):
     notes = Note.objects.filter(user_id=user_id, is_trash=False).order_by('created_at')
     for note in notes:
         full_content = remove_tag(note.content)
-        summery = ''
+        summary = ''
         if len(full_content) > 20:
-            summery = full_content[:20]
+            summary = full_content[:20]
         else:
-            summery = full_content
+            summary = full_content
         
         json_res['notes'].append({
             'user_email': user_email,
@@ -32,7 +32,7 @@ def get_list_note_all(request):
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summery': summery
+            'summary': summary
         })
     
     return JsonResponse(json_res)
@@ -84,11 +84,11 @@ def get_list_note_by_directory(request):
     notes = Note.objects.filter(directory_id=directory_id, is_trash=False).order_by('created_at')
     for note in notes:
         full_content = remove_tag(note.content)
-        summery = ''
+        summary = ''
         if len(full_content) > 20:
-            summery = full_content[:20]
+            summary = full_content[:20]
         else:
-            summery = full_content
+            summary = full_content
         
         json_res['notes'].append({
             'user_email': note.user.email,
@@ -96,7 +96,7 @@ def get_list_note_by_directory(request):
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summery': summery
+            'summary': summary
         })
     
     return JsonResponse(json_res)
@@ -113,11 +113,11 @@ def get_list_note_shared(request):
     shares = Share.objects.filter(user_id=user_id)
     for share in shares:
         full_content = remove_tag(share.note.content)
-        summery = ''
+        summary = ''
         if len(full_content) > 20:
-            summery = full_content[:20]
+            summary = full_content[:20]
         else:
-            summery = full_content
+            summary = full_content
 
         json_res['notes'].append({
             'user_email': user_email,
@@ -125,7 +125,7 @@ def get_list_note_shared(request):
             'title': share.note.title,
             'created_at': share.note.created_at,
             'updated_at': share.note.updated_at,
-            'summery': summery
+            'summary': summary
         })
 
     return JsonResponse(json_res)

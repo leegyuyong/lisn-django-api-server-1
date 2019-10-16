@@ -31,11 +31,11 @@ def search_by_title(request):
     for note_id in note_id_list:
         note = Note.objects.get(id=note_id)
         full_content = remove_tag(note.content)
-        summery = ''
+        summary = ''
         if len(full_content) > 20:
-            summery = full_content[:20]
+            summary = full_content[:20]
         else:
-            summery = full_content
+            summary = full_content
         
         json_res['notes'].append({
             'user_email': user.email,
@@ -43,7 +43,7 @@ def search_by_title(request):
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summery': summery
+            'summary': summary
         })
 
     return JsonResponse(json_res, status=200)
@@ -70,11 +70,11 @@ def search_by_content(request):
     for note_id in note_id_list:
         note = Note.objects.get(id=note_id)
         full_content = remove_tag(note.content)
-        summery = ''
+        summary = ''
         if len(full_content) > 20:
-            summery = full_content[:20]
+            summary = full_content[:20]
         else:
-            summery = full_content
+            summary = full_content
         
         json_res['notes'].append({
             'user_email': user.email,
@@ -82,7 +82,7 @@ def search_by_content(request):
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summery': summery
+            'summary': summary
         })
 
     return JsonResponse(json_res, status=200)
@@ -109,11 +109,11 @@ def search_by_sentence(request):
     for note_id in note_id_list:
         note = Note.objects.get(id=note_id)
         full_content = remove_tag(note.content)
-        summery = ''
+        summary = ''
         if len(full_content) > 20:
-            summery = full_content[:20]
+            summary = full_content[:20]
         else:
-            summery = full_content
+            summary = full_content
         
         json_res['notes'].append({
             'user_email': user.email,
@@ -121,7 +121,7 @@ def search_by_sentence(request):
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summery': summery
+            'summary': summary
         })
 
     return JsonResponse(json_res, status=200)
