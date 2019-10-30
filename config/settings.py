@@ -1,6 +1,6 @@
 import os, json
 
-DEBUG = True
+DEBUG = False
 
 # set base dir path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -68,9 +68,9 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': '', #temp
-            'USER': '', #temp
-            'PASSWORD': '', #temp
+            'NAME': keys['DATABASE_NAME'],
+            'USER': keys['DATABASE_USER'],
+            'PASSWORD': keys['DATABASE_PASSWORD'],
             'HOST': 'localhost',
             'PORT': '3306',
             'OPTIONS': {

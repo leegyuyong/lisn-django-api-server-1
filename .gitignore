@@ -6,6 +6,7 @@ db.sqlite3
 api/migrations/*
 !api/migrations/__init__.py
 lisn.log
+uwsgi.log
 secret_keys.json
 static/
 reset_db.sh

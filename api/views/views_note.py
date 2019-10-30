@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from api.models import Note, Audio, Sentence
 from api.utils import coerce_to_post
-from api.s3_client import delete_file_to_s3
+from api.s3_client.s3_client import delete_file_to_s3
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared, auth_note_id_edit
 from api.es_client.es_client import es
 
