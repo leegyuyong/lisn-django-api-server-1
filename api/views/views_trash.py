@@ -29,7 +29,6 @@ def cancle_trash(request):
     note.is_trash = False
     note.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_directory_id

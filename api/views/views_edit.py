@@ -21,7 +21,6 @@ def edit_mode(request):
     note.edit_user = user_id
     note.save()
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @auth_user_id
@@ -39,7 +38,6 @@ def read_mode(request):
     else:
         return HttpResponse('Only editing user can change mode', status=400)
 
-    log(request=request, status_code=200, request_param=request_param)
     return HttpResponse(status=200)
 
 @log
@@ -50,9 +48,7 @@ def api_note_edited(request):
         elif request.method == 'DELETE':
             return read_mode(request)
         else:
-            log(request=request, status_code=405)
             return HttpResponse(status=405)
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        log(request=request, status_code=400)
         return HttpResponse(status=400)
