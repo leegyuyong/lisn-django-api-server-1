@@ -8,13 +8,29 @@ from api.models import User, Note, Directory
 from api.utils import coerce_to_post
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
 
+def get_defalut_directory_name(user_id):
+    directories = Directory.objects.filter(user_id=user_id)
+    directory = directories.filter(name='untitled')
+    if not directory.exists():
+        return 'untitled'
+    else:
+        i = 1
+        while True:
+            name = 'untitled' + str(i)
+            directory = directories.filter(name=name)
+            if not directory.exists():
+                return name
+            i = i + 1
+            if i > 100:
+                return 'untitled'
+
 @auth_user_id
 def create_directory(request):
     user_id = int(request.POST.get('user_id'))
     
     directory = Directory.objects.create(
         user_id=user_id,
-        name='untitled'
+        name=get_defalut_directory_name(user_id)
     )
     json_res = dict()
     json_res['directory_id'] = directory.id

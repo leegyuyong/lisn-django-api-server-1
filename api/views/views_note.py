@@ -12,6 +12,22 @@ from api.s3_client.s3_client import delete_file_to_s3
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared, auth_note_id_edit
 from api.es_client.es_client import es
 
+def get_defalut_note_title(user_id):
+    notes = Note.objects.filter(user_id=user_id)
+    note = notes.filter(title='untitled')
+    if not note.exists():
+        return 'untitled'
+    else:
+        i = 1
+        while True:
+            title = 'untitled' + str(i)
+            note = notes.filter(title=title)
+            if not note.exists():
+                return title
+            i = i + 1
+            if i > 100:
+                return 'untitled'
+
 @auth_note_id_shared
 def get_note_info(request):
     note_id = int(request.GET.get('note_id'))
@@ -53,7 +69,7 @@ def create_note(request):
     note = Note.objects.create(
         user_id=user_id,
         #directory=0,
-        title='untitled',
+        title=get_defalut_note_title(user_id),
         started_at=timezone.now(),
         ended_at=timezone.now(),
         created_at=timezone.now(),
