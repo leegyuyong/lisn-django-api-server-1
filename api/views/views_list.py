@@ -48,12 +48,20 @@ def get_list_note_trash(request):
 
     notes = Note.objects.filter(user_id=user_id, is_trash=True).order_by('created_at')
     for note in notes:
+        full_content = remove_tag(note.content)
+        summary = ''
+        if len(full_content) > 20:
+            summary = full_content[:20]
+        else:
+            summary = full_content
+
         json_res['notes'].append({
             'user_email': user_email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
-            'updated_at': note.updated_at
+            'updated_at': note.updated_at,
+            'summary': summary
         })
     
     return JsonResponse(json_res)
