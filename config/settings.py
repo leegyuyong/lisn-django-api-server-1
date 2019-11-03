@@ -1,6 +1,6 @@
 import os, json
 
-DEBUG = True
+DEBUG = False
 
 # set base dir path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +17,7 @@ if DEBUG == True:
     SECRET_KEY = 'ksdafja!@#!#asflksjfd^%$%klsnf!@#@#!#'
     JWT_SECRET_KEY = '123fhksjdnnm.nv.@#$@#$vx.!@#!@#sdv@!#'
     AWS_S3_BUCKET = 'lisn'
+    AWS_S3_MEDIA_DIR = 'audio-dev1/'
 else:
     KEY_PATH = os.path.join(BASE_DIR, 'secret_keys.json')
     keys = dict()
@@ -25,6 +26,7 @@ else:
     SECRET_KEY = keys['DJANGO_SECRET_KEY']
     JWT_SECRET_KEY = keys['JWT_SECRET_KEY']
     AWS_S3_BUCKET = 'lisn'
+    AWS_S3_MEDIA_DIR = 'audio/'
 
 # set cors
 CORS_ORIGIN_ALLOW_ALL = True
@@ -52,16 +54,30 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
-    'api.user',
-    'api.record',
+    'api',
 ]
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if DEBUG == True:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': keys['DATABASE_NAME'],
+            'USER': keys['DATABASE_USER'],
+            'PASSWORD': keys['DATABASE_PASSWORD'],
+            'HOST': 'localhost',
+            'PORT': '3306',
+            'OPTIONS': {
+                'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
+            }
+        }
+    }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

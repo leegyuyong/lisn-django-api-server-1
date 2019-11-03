@@ -5,9 +5,7 @@ from django.shortcuts import render
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    path('v1/api/signin/', include('api.user.urls')),
-    path('v1/api/record/', include('api.record.urls')),
+    path('api/', include('api.urls')),
 ]
 
 if settings.DEBUG:

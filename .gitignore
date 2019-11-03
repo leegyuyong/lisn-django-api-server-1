@@ -3,10 +3,13 @@ db.sqlite3
 *__pycache__
 *.webm
 *.flac
-api/record/migrations/*
-!api/record/migrations/__init__.py
-api/user/migrations/*
-!api/user/migrations/__init__.py
+api/migrations/*
+!api/migrations/__init__.py
 lisn.log
+uwsgi.log
 secret_keys.json
 static/
+reset_db.sh
+run.sh
+venv/
+.vscode/

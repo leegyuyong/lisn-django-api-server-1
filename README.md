@@ -1,10 +1,10 @@
 [![LISN](https://user-images.githubusercontent.com/51017609/63237566-7cae2980-c27d-11e9-8a2f-6067a66f8c18.png)](https://li-sn.io)
 
 ## Table of Contents
-- [Server Architecture](#Server-Architecture)
-- [User API](#User-API)
-- [Record API](#Record-API)
-- [API response status code](#API-response-status-code)
+- [Server Architecture](#server-architecture)
+- [User API](#user-api)
+- [Record API](#record-api)
+- [API response status code](#api-response-status-code)
 
 <br>
 
