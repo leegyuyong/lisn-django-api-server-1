@@ -41,6 +41,11 @@ def create_sentence(request):
         ended_at=ended_at,
         content=content
     )
+
+    if ended_at == -1:
+        audio.length = audio.length + started_at
+        audio.save()
+
     json_res = dict()
     json_res['sentence_id'] = sentence.id
     

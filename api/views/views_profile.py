@@ -20,6 +20,16 @@ def get_profile_info(request):
     json_res['user_email'] = user.email
     json_res['user_picture_url'] = user.picture_url
     
+    audio_usage = 0
+    notes = Note.objects.filter(user_id=user_id)
+    for note in notes:
+        audios = Audio.objects.filter(note_id=note.id)
+        for audio in audios:
+            audio_usage = audio_usage + audio.length
+
+    json_res['user_num_of_notes'] = len(notes)
+    json_res['user_audio_usage'] = audio_usage
+
     return JsonResponse(json_res)
 
 @auth_user_id

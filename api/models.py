@@ -22,6 +22,7 @@ class Note(models.Model):
 class Audio(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    length = models.IntegerField(default=0)
 
 class Sentence(models.Model):
     index = models.IntegerField()
