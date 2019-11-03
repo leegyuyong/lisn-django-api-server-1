@@ -88,6 +88,20 @@ def move_to_null_directory(request):
 
     return HttpResponse(status=200)
 
+@auth_directory_id
+def change_directory_color(request):
+    coerce_to_post(request)
+
+    directory_id = int(request.PUT.get('directory_id'))
+    color = int(request.PUT.get('color'))
+
+    directory = Directory.objects.get(id=directory_id)
+    
+    directory.color = color
+    directory.save()
+
+    return HttpResponse(status=200)
+
 @log
 def api_directory(request):
     try:
@@ -110,6 +124,17 @@ def api_note_directory(request):
             return move_to_directory(request)
         elif request.method == 'DELETE':
             return move_to_null_directory(request)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+@log
+def api_directory_color(request):
+    try:
+        if request.method == 'PUT':
+            return change_directory_color(request)
         else:
             return HttpResponse(status=405)
     except:

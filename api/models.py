@@ -8,6 +8,7 @@ class User(models.Model):
 class Directory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    color = models.IntegerField(default=0)
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
