@@ -66,7 +66,6 @@ def create_note(request):
     
     note = Note.objects.create(
         user_id=user_id,
-        #directory=0,
         title=get_defalut_note_title(user_id),
         created_at=timezone.now(),
         updated_at=timezone.now(),

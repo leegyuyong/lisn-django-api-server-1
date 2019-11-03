@@ -26,13 +26,20 @@ def get_list_note_all(request):
         else:
             summary = full_content
         
+        color = 0
+        if note.directory is None:
+            color = -1
+        else:
+            color = note.directory.color
+
         json_res['notes'].append({
             'user_email': user_email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
     
     return JsonResponse(json_res)
@@ -55,13 +62,20 @@ def get_list_note_trash(request):
         else:
             summary = full_content
 
+        color = 0
+        if note.directory is None:
+            color = -1
+        else:
+            color = note.directory.color
+
         json_res['notes'].append({
             'user_email': user_email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
     
     return JsonResponse(json_res)
@@ -98,13 +112,20 @@ def get_list_note_by_directory(request):
         else:
             summary = full_content
         
+        color = 0
+        if note.directory is None:
+            color = -1
+        else:
+            color = note.directory.color
+
         json_res['notes'].append({
             'user_email': note.user.email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
     
     return JsonResponse(json_res)
@@ -127,13 +148,20 @@ def get_list_note_shared(request):
         else:
             summary = full_content
 
+        color = 0
+        if share.note.directory is None:
+            color = -1
+        else:
+            color = share.note.directory.color
+
         json_res['notes'].append({
             'user_email': user_email,
             'note_id': share.note.id,
             'title': share.note.title,
             'created_at': share.note.created_at,
             'updated_at': share.note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
 
     return JsonResponse(json_res)

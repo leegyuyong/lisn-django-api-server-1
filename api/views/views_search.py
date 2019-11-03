@@ -37,13 +37,20 @@ def search_by_title(request):
         else:
             summary = full_content
         
+        color = 0
+        if note.directory is None:
+            color = -1
+        else:
+            color = note.directory.color
+
         json_res['notes'].append({
             'user_email': user.email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
 
     return JsonResponse(json_res, status=200)
@@ -76,13 +83,20 @@ def search_by_content(request):
         else:
             summary = full_content
         
+        color = 0
+        if note.directory is None:
+            color = -1
+        else:
+            color = note.directory.color
+
         json_res['notes'].append({
             'user_email': user.email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
 
     return JsonResponse(json_res, status=200)
@@ -115,13 +129,20 @@ def search_by_sentence(request):
         else:
             summary = full_content
         
+        color = 0
+        if note.directory is None:
+            color = -1
+        else:
+            color = note.directory.color
+
         json_res['notes'].append({
             'user_email': user.email,
             'note_id': note.id,
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
-            'summary': summary
+            'summary': summary,
+            'color' : color
         })
 
     return JsonResponse(json_res, status=200)

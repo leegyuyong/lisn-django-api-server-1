@@ -12,6 +12,7 @@ urlpatterns = [
     path('note/directory', views.views_directory.api_note_directory, name='api_note_directory'),
     path('list/directory', views.views_list.api_list_directory, name='api_list_directory'),
     path('directory', views.views_directory.api_directory, name='api_directory'),
+    path('directory/color', views.views_directory.api_directory_color, name='api_directory_color'),
     path('profile', views.views_profile.api_profile, name='api_profile'),
     path('profile/usage', views.views_profile.api_profile_usage, name='api_profile_usage'),
     path('list/note', views.views_list.api_list_note, name='api_list_note'),
