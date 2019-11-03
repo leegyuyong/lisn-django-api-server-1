@@ -148,12 +148,7 @@ def get_list_note_shared(request):
         else:
             summary = full_content
 
-        color = 0
-        if share.note.directory is None:
-            color = -1
-        else:
-            color = share.note.directory.color
-
+        color = -1
         json_res['notes'].append({
             'user_email': user_email,
             'note_id': share.note.id,

@@ -39,6 +39,11 @@ def get_note_info(request):
     json_res['content'] = note.content
     json_res['created_at'] = note.created_at
     json_res['updated_at'] = note.updated_at
+
+    # not used
+    json_res['started_at'] = timezone.now()
+    json_res['ended_at'] = timezone.now()
+
     json_res['audios'] = []
 
     audios = Audio.objects.filter(note_id=note_id).order_by('id')
