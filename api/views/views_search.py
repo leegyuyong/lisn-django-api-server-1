@@ -156,6 +156,24 @@ def search_by_note_sentence(request):
 
     return JsonResponse(json_res, status=200)
 
+def search_user(request):
+    query_word = request.GET.get('query')
+
+    query = {'query':{'prefix':{}}}
+    query['query']['prefix']['email'] = {'value':query_word}
+    es_result = es.search(index='user', body=query)
+
+    json_res = dict()
+    json_res['emails'] = []
+
+    for user in es_result['hits']['hits']:
+        user_email = user['_source']['email']
+        json_res['emails'].append(user_email)
+        if len(json_res['emails']) >= 5:
+            break
+
+    return JsonResponse(json_res, status=200)
+
 @log
 def api_search_title(request):
     try:
@@ -194,6 +212,17 @@ def api_search_note_sentence(request):
     try:
         if request.method == 'GET':
             return search_by_note_sentence(request)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+@log
+def api_search_user(request):
+    try:
+        if request.method == 'GET':
+            return search_user(request)
         else:
             return HttpResponse(status=405)
     except:

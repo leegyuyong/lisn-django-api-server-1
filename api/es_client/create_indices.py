@@ -3,6 +3,21 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch()
 
 es.indices.create(
+    index='user',
+    body={
+        "mappings": {
+            "user_datas": {
+                "properties": {
+                    "email": {
+                        "type": "text"
+                    }
+                }
+            }
+        }
+    }
+)
+
+es.indices.create(
     index='note',
     body={
         "settings": {

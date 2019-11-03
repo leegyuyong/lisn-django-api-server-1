@@ -13,6 +13,7 @@ from api.models import User
 from api.utils import coerce_to_post
 from config.settings import JWT_SECRET_KEY
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
+from api.es_client.es_client import es
 
 CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
 
@@ -30,6 +31,11 @@ def get_token(request):
 
     if len(user_list) == 0:
         user = User.objects.create(name=user_name, email=user_email, picture_url=user_picture_url)
+
+        # elasticsearch document create
+        es_document = dict()
+        es_document['email'] = user_email
+        es.create(index='user', body=es_document, id=user.id)
     else:
         user = user_list[0]
         user.picture_url = user_picture_url
