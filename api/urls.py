@@ -13,6 +13,7 @@ urlpatterns = [
     path('list/directory', views.views_list.api_list_directory, name='api_list_directory'),
     path('directory', views.views_directory.api_directory, name='api_directory'),
     path('profile', views.views_profile.api_profile, name='api_profile'),
+    path('profile/usage', views.views_profile.api_profile_usage, name='api_profile_usage'),
     path('list/note', views.views_list.api_list_note, name='api_list_note'),
     path('note/shared', views.views_share.api_note_shared, name='api_note_shared'),
     path('list/note/shared', views.views_list.api_list_note_shared, name='api_list_note_shared'),
