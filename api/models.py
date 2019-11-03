@@ -13,8 +13,6 @@ class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
-    started_at = models.DateTimeField()
-    ended_at = models.DateTimeField()
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
     content = models.TextField()

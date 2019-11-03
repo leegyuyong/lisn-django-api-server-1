@@ -37,8 +37,6 @@ def get_note_info(request):
     json_res['note_id'] = note.id
     json_res['title'] = note.title
     json_res['content'] = note.content
-    json_res['started_at'] = note.started_at
-    json_res['ended_at'] = note.ended_at
     json_res['created_at'] = note.created_at
     json_res['updated_at'] = note.updated_at
     json_res['audios'] = []
@@ -70,8 +68,6 @@ def create_note(request):
         user_id=user_id,
         #directory=0,
         title=get_defalut_note_title(user_id),
-        started_at=timezone.now(),
-        ended_at=timezone.now(),
         created_at=timezone.now(),
         updated_at=timezone.now(),
         content='',
@@ -98,29 +94,11 @@ def update_note(request):
     note_id = int(request.PUT.get('note_id'))
     title = str(request.PUT.get('title'))
     content = str(request.PUT.get('content'))
-    started_at = [int(x) for x in str(request.PUT.get('started_at')).split('/')]
-    ended_at = [int(x) for x in str(request.PUT.get('ended_at')).split('/')]
 
     note = Note.objects.get(id=note_id)
     
     note.title = title
     note.content = content
-    note.started_at = datetime.datetime(
-        started_at[0],
-        started_at[1],
-        started_at[2],
-        started_at[3],
-        started_at[4],
-        started_at[5],
-    )
-    note.ended_at = datetime.datetime(
-        ended_at[0],
-        ended_at[1],
-        ended_at[2],
-        ended_at[3],
-        ended_at[4],
-        ended_at[5],
-    )
     note.updated_at = timezone.now()
     note.save()
 
