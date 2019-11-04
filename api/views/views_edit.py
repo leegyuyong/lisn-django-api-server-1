@@ -8,12 +8,10 @@ from api.utils import coerce_to_post
 from api.models import Note
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_note_id_shared, auth_note_id_edit
 
-@auth_user_id
 @auth_note_id_shared
 @auth_note_id_edit
 def edit_mode(request):
     coerce_to_post(request)
-    request_param = request.PUT
     user_id = int(request.PUT.get('user_id'))
     note_id = int(request.PUT.get('note_id'))
     note = Note.objects.get(id=note_id)
@@ -23,11 +21,9 @@ def edit_mode(request):
 
     return HttpResponse(status=200)
 
-@auth_user_id
 @auth_note_id_shared
 def read_mode(request):
     coerce_to_post(request)
-    request_param = request.DELETE
     user_id = int(request.DELETE.get('user_id'))
     note_id = int(request.DELETE.get('note_id'))
     note = Note.objects.get(id=note_id)

@@ -12,6 +12,7 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 @auth_note_id
 def upload_audio_data(request):
     note_id = int(request.POST.get('note_id'))
+    length = int(request.POST.get('length'))
     note = Note.objects.get(id=note_id)
     user_id = note.user.id
     
@@ -20,12 +21,12 @@ def upload_audio_data(request):
     
     audio = Audio.objects.create(
         note_id=note_id,
-        user_id=user_id
+        user_id=user_id,
+        length=length
     )
 
     audio_data = request.FILES['audio_data']
     upload_file_to_s3(audio_data, settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
-    
     json_res = dict()
     json_res['audio_id'] = audio.id
     

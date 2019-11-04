@@ -22,7 +22,6 @@ def make_trash(request):
 @auth_note_id
 def cancle_trash(request):
     coerce_to_post(request)
-    request_param = request.DELETE
     note_id = int(request.DELETE.get('note_id'))
     note = Note.objects.get(id=note_id)
 
