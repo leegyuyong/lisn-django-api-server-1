@@ -141,6 +141,8 @@ def get_list_note_shared(request):
 
     shares = Share.objects.filter(user_id=user_id)
     for share in shares:
+        if share.note.is_trash == True:
+            continue
         full_content = remove_tag(share.note.content)
         summary = ''
         if len(full_content) > 20:
