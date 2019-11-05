@@ -20,7 +20,7 @@ def delete_file_to_s3(object_name):
         return False
     return True
 
-def create_presigned_url_s3(object_name, expiration=3600):
+def create_presigned_url_s3(object_name, expiration=21600):
     bucket = settings.AWS_S3_BUCKET
     s3_client = boto3.client('s3')
     try:
