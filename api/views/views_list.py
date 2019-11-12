@@ -21,8 +21,8 @@ def get_list_note_all(request):
     for note in notes:
         full_content = remove_tag(note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
         
@@ -57,8 +57,8 @@ def get_list_note_trash(request):
     for note in notes:
         full_content = remove_tag(note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
 
@@ -107,8 +107,8 @@ def get_list_note_by_directory(request):
     for note in notes:
         full_content = remove_tag(note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
         
@@ -145,8 +145,8 @@ def get_list_note_shared(request):
             continue
         full_content = remove_tag(share.note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
 

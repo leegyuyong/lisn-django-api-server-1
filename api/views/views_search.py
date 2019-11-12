@@ -32,8 +32,8 @@ def search_by_title(request):
         note = Note.objects.get(id=note_id)
         full_content = remove_tag(note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
         
@@ -78,8 +78,8 @@ def search_by_content(request):
         note = Note.objects.get(id=note_id)
         full_content = remove_tag(note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
         
@@ -124,8 +124,8 @@ def search_by_sentence(request):
         note = Note.objects.get(id=note_id)
         full_content = remove_tag(note.content)
         summary = ''
-        if len(full_content) > 20:
-            summary = full_content[:20]
+        if len(full_content) > 40:
+            summary = full_content[:40]
         else:
             summary = full_content
         
