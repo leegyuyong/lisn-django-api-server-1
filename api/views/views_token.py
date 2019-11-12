@@ -34,7 +34,9 @@ def get_token(request):
 
         # elasticsearch document create
         es_document = dict()
+        es_document['name'] = user_name
         es_document['email'] = user_email
+        es_document['picture_url'] = user_picture_url
         es.create(index='user', body=es_document, id=user.id)
     else:
         user = user_list[0]

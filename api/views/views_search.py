@@ -203,11 +203,21 @@ def search_user(request):
     es_result = es.search(index='user', body=query)
 
     json_res = dict()
-    json_res['emails'] = []
+    json_res['users'] = []
 
     for user in es_result['hits']['hits']:
+        user_id = int(user['_id'])
+        user_name = user['_source']['name']
         user_email = user['_source']['email']
-        json_res['emails'].append(user_email)
+        user_picture_url = user['_source']['picture_url']
+
+        json_res['users'].append({
+            'user_id': user_id,
+            'user_name': user_name,
+            'user_email': user_email,
+            'user_picture_url': user_picture_url
+        })
+        
         if len(json_res['emails']) >= 5:
             break
 
