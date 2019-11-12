@@ -15,6 +15,7 @@ def make_trash(request):
     note = Note.objects.get(id=note_id)
     
     note.is_trash = True
+    note.deleted_at = timezone.now()
     note.save()
 
     return HttpResponse(status=200)
@@ -37,6 +38,7 @@ def delete_directory_note(request):
     notes = Note.objects.filter(directory_id=directory_id)
     for note in notes:
         note.is_trash = True
+        note.deleted_at = timezone.now()
         note.save()
     
     return HttpResponse(status=200)

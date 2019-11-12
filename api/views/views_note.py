@@ -70,6 +70,7 @@ def create_note(request):
         title=get_defalut_note_title(user_id),
         created_at=timezone.now(),
         updated_at=timezone.now(),
+        deleted_at=timezone.now(),
         content='',
         is_trash=False
     )

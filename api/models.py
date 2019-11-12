@@ -16,6 +16,7 @@ class Note(models.Model):
     title = models.CharField(max_length=200)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+    deleted_at = models.DateTimeField()
     content = models.TextField()
     is_trash = models.BooleanField(default=False)
     edit_user = models.IntegerField(null=True)

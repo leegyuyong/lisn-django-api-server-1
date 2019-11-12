@@ -85,6 +85,7 @@ def get_list_note_trash(request):
             'title': note.title,
             'created_at': note.created_at,
             'updated_at': note.updated_at,
+            'deleted_at': note.deleted_at,
             'summary': summary,
             'color': color,
             'is_shared': is_shared
