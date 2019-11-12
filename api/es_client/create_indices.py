@@ -8,7 +8,13 @@ es.indices.create(
         "mappings": {
             "user_datas": {
                 "properties": {
+                    "name": {
+                        "type": "text"
+                    },
                     "email": {
+                        "type": "text"
+                    },
+                    "picture_url": {
                         "type": "text"
                     }
                 }

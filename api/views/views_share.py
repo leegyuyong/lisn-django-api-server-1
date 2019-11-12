@@ -42,6 +42,17 @@ def delete_sharing(request):
 
     return HttpResponse(status=200)
 
+@auth_note_id
+def delete_sharing_master(request):
+    coerce_to_post(request)
+    note_id = int(request.DELETE.get('note_id'))
+    user_id = int(request.DELETE.get('user_id'))
+    
+    share = Share.objects.filter(note_id=note_id, user_id=user_id)
+    share.delete()
+
+    return HttpResponse(status=200)
+
 @log
 def api_note_shared(request):
     try:
@@ -49,6 +60,17 @@ def api_note_shared(request):
             return make_sharing(request)
         elif request.method == 'DELETE':
             return delete_sharing(request)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+@log
+def api_note_shared_master(request):
+    try:
+        if request.method == 'DELETE':
+            return delete_sharing_master(request)
         else:
             return HttpResponse(status=405)
     except:

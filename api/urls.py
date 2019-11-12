@@ -17,6 +17,7 @@ urlpatterns = [
     path('profile/usage', views.views_profile.api_profile_usage, name='api_profile_usage'),
     path('list/note', views.views_list.api_list_note, name='api_list_note'),
     path('note/shared', views.views_share.api_note_shared, name='api_note_shared'),
+    path('note/shared/master', views.views_share.api_note_shared_master, name='api_note_shared_master'),
     path('list/note/shared', views.views_list.api_list_note_shared, name='api_list_note_shared'),
     path('list/user/shared', views.views_list.api_list_user_shared, name='api_list_user_shared'),
     path('directory/trash', views.views_trash.api_directory_trash, name='api_directory_trash'),
