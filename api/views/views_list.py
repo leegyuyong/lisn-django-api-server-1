@@ -192,7 +192,9 @@ def get_list_user_shared(request):
     for share in shares:
         json_res['users'].append({
             'user_id': share.user.id,
-            'user_email': share.user.email
+            'user_name': share.user.name,
+            'user_email': share.user.email,
+            'user_picture_url': share.user.picture_url
         })
     
     return JsonResponse(json_res)
