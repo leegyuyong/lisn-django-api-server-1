@@ -4,7 +4,7 @@ import sys
 from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
-from api.models import User, Note, Audio, Sentence
+from api.models import User, Note, Audio, Sentence, Share
 from api.utils import coerce_to_post
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
 from api.s3_client.s3_client import delete_file_to_s3
@@ -52,15 +52,24 @@ def get_usage_info(request):
     user_id = int(request.GET.get('user_id'))
 
     audio_usage = 0
-    notes = Note.objects.filter(user_id=user_id)
+    notes = Note.objects.filter(user_id=user_id, is_trash=False)
     for note in notes:
         audios = Audio.objects.filter(note_id=note.id)
         for audio in audios:
             audio_usage = audio_usage + audio.length
 
+    shared = len(Share.objects.filter(user_id=user_id))
+    sharing = 0
+    for note in notes:
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            sharing = sharing + 1
+
     json_res = dict()
     json_res['user_num_of_notes'] = len(notes)
     json_res['user_audio_usage'] = audio_usage
+    json_res['user_num_of_shared'] = shared
+    json_res['user_num_of_sharing'] = sharing
 
     return JsonResponse(json_res)
 
