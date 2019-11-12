@@ -27,16 +27,18 @@ def get_token(request):
     user_name = user_info['name']
     user_email = user_info['email']
     user_picture_url = user_info['picture']
+    user_language = 'ko-KR'
     user_list = User.objects.filter(email=user_email)
 
     if len(user_list) == 0:
-        user = User.objects.create(name=user_name, email=user_email, picture_url=user_picture_url)
+        user = User.objects.create(name=user_name, email=user_email, picture_url=user_picture_url, language=user_language)
 
         # elasticsearch document create
         es_document = dict()
         es_document['name'] = user_name
         es_document['email'] = user_email
         es_document['picture_url'] = user_picture_url
+        es_document['language'] = 'ko-KR'
         es.create(index='user', body=es_document, id=user.id)
     else:
         user = user_list[0]

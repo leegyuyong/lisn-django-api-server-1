@@ -19,6 +19,7 @@ def get_profile_info(request):
     json_res['user_name'] = user.name
     json_res['user_email'] = user.email
     json_res['user_picture_url'] = user.picture_url
+    json_res['user_language'] = user.language
 
     return JsonResponse(json_res)
 
@@ -73,6 +74,22 @@ def get_usage_info(request):
 
     return JsonResponse(json_res)
 
+@auth_user_id
+def change_language(request):
+    coerce_to_post(request)
+    user_id = int(request.PUT.get('user_id'))
+    language = request.PUT.get('language')
+    user = User.objects.get(id=user_id)
+
+    user.language = language
+    user.save()
+
+    es_document = dict()
+    es_document['language'] = language
+    es.update(index='user', body={'doc':es_document}, id=user.id)
+    
+    return HttpResponse(status=200)
+
 @log
 def api_profile(request):
     try:
@@ -91,6 +108,17 @@ def api_profile_usage(request):
     try:
         if request.method == 'GET':
             return get_usage_info(request)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+@log
+def api_profile_language(request):
+    try:
+        if request.method == 'PUT':
+            return change_language(request)
         else:
             return HttpResponse(status=405)
     except:

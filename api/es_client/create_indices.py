@@ -16,6 +16,9 @@ es.indices.create(
                     },
                     "picture_url": {
                         "type": "text"
+                    },
+                    "language": {
+                        "type": "text"
                     }
                 }
             }
