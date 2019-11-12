@@ -31,6 +31,11 @@ def get_list_note_all(request):
             color = -1
         else:
             color = note.directory.color
+        
+        is_shared = False
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            is_shared = True
 
         json_res['notes'].append({
             'user_email': user_email,
@@ -39,7 +44,8 @@ def get_list_note_all(request):
             'created_at': note.created_at,
             'updated_at': note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color,
+            'is_shared': is_shared
         })
     
     return JsonResponse(json_res)
@@ -68,6 +74,11 @@ def get_list_note_trash(request):
         else:
             color = note.directory.color
 
+        is_shared = False
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            is_shared = True
+
         json_res['notes'].append({
             'user_email': user_email,
             'note_id': note.id,
@@ -75,7 +86,8 @@ def get_list_note_trash(request):
             'created_at': note.created_at,
             'updated_at': note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color,
+            'is_shared': is_shared
         })
     
     return JsonResponse(json_res)
@@ -118,6 +130,11 @@ def get_list_note_by_directory(request):
         else:
             color = note.directory.color
 
+        is_shared = False
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            is_shared = True
+
         json_res['notes'].append({
             'user_email': note.user.email,
             'note_id': note.id,
@@ -125,7 +142,8 @@ def get_list_note_by_directory(request):
             'created_at': note.created_at,
             'updated_at': note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color,
+            'is_shared': is_shared
         })
     
     return JsonResponse(json_res)
@@ -158,7 +176,7 @@ def get_list_note_shared(request):
             'created_at': share.note.created_at,
             'updated_at': share.note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color
         })
 
     return JsonResponse(json_res)

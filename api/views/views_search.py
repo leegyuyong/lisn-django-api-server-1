@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse, QueryDict
 from django.conf import settings
 
 from api.utils import remove_tag
-from api.models import User, Note, Sentence
+from api.models import User, Note, Sentence, Share
 from api.auth import auth_user_id, auth_note_id
 from api.es_client.es_client import es
 
@@ -43,6 +43,11 @@ def search_by_title(request):
         else:
             color = note.directory.color
 
+        is_shared = False
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            is_shared = True
+
         json_res['notes'].append({
             'user_email': user.email,
             'note_id': note.id,
@@ -50,7 +55,8 @@ def search_by_title(request):
             'created_at': note.created_at,
             'updated_at': note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color,
+            'is_shared': is_shared
         })
 
     return JsonResponse(json_res, status=200)
@@ -89,6 +95,11 @@ def search_by_content(request):
         else:
             color = note.directory.color
 
+        is_shared = False
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            is_shared = True
+
         json_res['notes'].append({
             'user_email': user.email,
             'note_id': note.id,
@@ -96,7 +107,8 @@ def search_by_content(request):
             'created_at': note.created_at,
             'updated_at': note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color,
+            'is_shared': is_shared
         })
 
     return JsonResponse(json_res, status=200)
@@ -135,6 +147,11 @@ def search_by_sentence(request):
         else:
             color = note.directory.color
 
+        is_shared = False
+        share = Share.objects.filter(note_id=note.id)
+        if share.exists():
+            is_shared = True
+
         json_res['notes'].append({
             'user_email': user.email,
             'note_id': note.id,
@@ -142,7 +159,8 @@ def search_by_sentence(request):
             'created_at': note.created_at,
             'updated_at': note.updated_at,
             'summary': summary,
-            'color' : color
+            'color': color,
+            'is_shared': is_shared
         })
 
     return JsonResponse(json_res, status=200)
