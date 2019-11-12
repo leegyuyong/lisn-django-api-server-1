@@ -6,6 +6,7 @@ import datetime
 from django.http import HttpResponse
 from django.conf import settings
 from django.core.files import File
+from django.core.mail import EmailMessage
 
 from api.models import User
 from api.auth import auth_user_id
@@ -23,10 +24,21 @@ def contact_us(request):
 
     with open(path, 'w', encoding='utf8') as fp:
         f = File(fp)
-        f.write('from: ' + user.name + ' ' + user.email + '\tid=' + str(user_id) + '\n')
+        f.write('from: ' + user.name + ' ' + user.email + ' id=' + str(user_id) + '\n')
         f.write('date: ' + str(now) + '\n')
         f.write('title: ' + title + '\n\n')
         f.write(content)
+
+    mail_title = '[User Contact] '
+    mail_title = mail_title + title
+    mail_content = 'from: ' + user.name + ' ' + user.email + ' id=' + str(user_id) + '\n\n'
+    mail_content = mail_content + content
+
+    EmailMessage(
+        mail_title,
+        mail_content,
+        to=[settings.EMAIL_HOST_USER],
+    ).send()
 
     return HttpResponse(status=200)
 

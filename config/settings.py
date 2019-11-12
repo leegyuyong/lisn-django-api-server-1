@@ -12,6 +12,11 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = False
 
+KEY_PATH = os.path.join(BASE_DIR, 'secret_keys.json')
+keys = dict()
+with open(KEY_PATH) as f:
+    keys = json.loads(f.read())
+
 # set keys & aws s3 bucket
 if DEBUG == True:
     SECRET_KEY = 'ksdafja!@#!#asflksjfd^%$%klsnf!@#@#!#'
@@ -19,14 +24,19 @@ if DEBUG == True:
     AWS_S3_BUCKET = 'lisn'
     AWS_S3_MEDIA_DIR = 'audio-dev1/'
 else:
-    KEY_PATH = os.path.join(BASE_DIR, 'secret_keys.json')
-    keys = dict()
-    with open(KEY_PATH) as f:
-        keys = json.loads(f.read())
     SECRET_KEY = keys['DJANGO_SECRET_KEY']
     JWT_SECRET_KEY = keys['JWT_SECRET_KEY']
     AWS_S3_BUCKET = 'lisn'
     AWS_S3_MEDIA_DIR = 'audio/'
+
+# set email config
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = keys['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = keys['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # set cors
 CORS_ORIGIN_ALLOW_ALL = True
