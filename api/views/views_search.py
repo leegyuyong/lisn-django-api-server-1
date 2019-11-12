@@ -218,7 +218,7 @@ def search_user(request):
             'user_picture_url': user_picture_url
         })
         
-        if len(json_res['emails']) >= 5:
+        if len(json_res['users']) >= 5:
             break
 
     return JsonResponse(json_res, status=200)
