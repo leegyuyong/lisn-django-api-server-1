@@ -9,6 +9,7 @@ lisn.log
 uwsgi.log
 secret_keys.json
 static/
+contacts/
 reset_db.sh
 run.sh
 venv/

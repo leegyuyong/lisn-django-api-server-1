@@ -28,4 +28,5 @@ urlpatterns = [
     path('search/sentence', views.views_search.api_search_sentence, name='api_search_sentence'),
     path('search/note/sentence', views.views_search.api_search_note_sentence, name='api_search_note_sentence'),
     path('search/user', views.views_search.api_search_user, name='api_search_user'),
+    path('contact', views.views_contact.api_contact, name='api_contact'),
 ]
