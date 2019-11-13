@@ -185,9 +185,18 @@ def get_list_note_shared(request):
 @auth_note_id_shared
 def get_list_user_shared(request):
     note_id = int(request.GET.get('note_id'))
+    note = Note.objects.get(id=note_id)
 
     json_res = dict()
     json_res['users'] = []
+
+    json_res['users'].append({
+        'user_id': note.user.id,
+        'user_name': note.user.name,
+        'user_email': note.user.email,
+        'user_picture_url': note.user.picture_url
+        'is_master': True
+    })
 
     shares = Share.objects.filter(note_id=note_id)
     for share in shares:
@@ -196,6 +205,7 @@ def get_list_user_shared(request):
             'user_name': share.user.name,
             'user_email': share.user.email,
             'user_picture_url': share.user.picture_url
+            'is_master': False
         })
     
     return JsonResponse(json_res)
