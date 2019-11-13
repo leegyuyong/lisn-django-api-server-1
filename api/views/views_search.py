@@ -196,7 +196,8 @@ def search_by_note_sentence(request):
     return JsonResponse(json_res, status=200)
 
 def search_user(request):
-    query_word = request.GET.get('query')
+    query_str = request.GET.get('query')
+    query_word = query_str.split('@')[0]
 
     query = {'query':{'prefix':{}}}
     query['query']['prefix']['email'] = {'value':query_word}
@@ -210,7 +211,11 @@ def search_user(request):
         user_name = user['_source']['name']
         user_email = user['_source']['email']
         user_picture_url = user['_source']['picture_url']
-
+        
+        if len(query_word) > 0:
+            if query_word[0] != user_email[0]:
+                continue
+                
         json_res['users'].append({
             'user_id': user_id,
             'user_name': user_name,

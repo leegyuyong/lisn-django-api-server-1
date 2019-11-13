@@ -19,6 +19,11 @@ def make_sharing(request):
         return HttpResponse('No Matching Users', status=400)
 
     user = User.objects.get(email=email)
+    note = Note.objects.get(id=note_id)
+
+    if note.user.id == user.id:
+        return HttpResponse('Already Exist', status=400)
+
     share = Share.objects.filter(note_id=note_id, user_id=user.id)
 
     if share.exists():
