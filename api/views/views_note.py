@@ -34,6 +34,7 @@ def get_note_info(request):
     note = Note.objects.get(id=note_id)
 
     json_res = dict()
+    json_res['user_id'] = note.user.id
     json_res['note_id'] = note.id
     json_res['title'] = note.title
     json_res['content'] = note.content
