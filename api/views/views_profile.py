@@ -74,6 +74,20 @@ def get_usage_info(request):
 
     return JsonResponse(json_res)
 
+def get_status(request):
+    users = User.objects.all()
+    notes = Note.objects.all()
+    audios = Audio.objects.all()
+    sentences = Sentence.objects.all()
+
+    json_res = dict()
+    json_res['num_of_users'] = len(users)
+    json_res['num_of_notes'] = len(notes)
+    json_res['num_of_audios'] = len(audios)
+    json_res['num_of_sentences'] = len(sentences)
+
+    return JsonResponse(json_res)
+
 @auth_user_id
 def change_language(request):
     coerce_to_post(request)
@@ -119,6 +133,17 @@ def api_profile_language(request):
     try:
         if request.method == 'PUT':
             return change_language(request)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+@log
+def api_profile_status(request):
+    try:
+        if request.method == 'GET':
+            return get_status(request)
         else:
             return HttpResponse(status=405)
     except:

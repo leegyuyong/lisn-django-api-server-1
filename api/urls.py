@@ -16,6 +16,7 @@ urlpatterns = [
     path('profile', views.views_profile.api_profile, name='api_profile'),
     path('profile/usage', views.views_profile.api_profile_usage, name='api_profile_usage'),
     path('profile/language', views.views_profile.api_profile_language, name='api_profile_language'),
+    path('profile/status', views.views_profile.api_profile_status, name='api_profile_status'),
     path('list/note', views.views_list.api_list_note, name='api_list_note'),
     path('note/shared', views.views_share.api_note_shared, name='api_note_shared'),
     path('note/shared/master', views.views_share.api_note_shared_master, name='api_note_shared_master'),
