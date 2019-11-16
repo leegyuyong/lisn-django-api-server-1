@@ -104,7 +104,8 @@ def get_list_directory(request):
     for directory in directories:
         json_res['directories'].append({
             'directory_id': directory.id,
-            'name': directory.name
+            'name': directory.name,
+            'color': directory.color
         })
     
     return JsonResponse(json_res)
