@@ -56,7 +56,8 @@ def search_by_title(request):
             'updated_at': note.updated_at,
             'summary': summary,
             'color': color,
-            'is_shared': is_shared
+            'is_shared': is_shared,
+            'num_of_share': len(share)
         })
 
     return JsonResponse(json_res, status=200)
@@ -108,7 +109,8 @@ def search_by_content(request):
             'updated_at': note.updated_at,
             'summary': summary,
             'color': color,
-            'is_shared': is_shared
+            'is_shared': is_shared,
+            'num_of_share': len(share)
         })
 
     return JsonResponse(json_res, status=200)
@@ -160,7 +162,8 @@ def search_by_sentence(request):
             'updated_at': note.updated_at,
             'summary': summary,
             'color': color,
-            'is_shared': is_shared
+            'is_shared': is_shared,
+            'num_of_share': len(share)
         })
 
     return JsonResponse(json_res, status=200)

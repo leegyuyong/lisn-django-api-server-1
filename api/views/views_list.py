@@ -45,7 +45,8 @@ def get_list_note_all(request):
             'updated_at': note.updated_at,
             'summary': summary,
             'color': color,
-            'is_shared': is_shared
+            'is_shared': is_shared,
+            'num_of_share': len(share)
         })
     
     return JsonResponse(json_res)
@@ -88,7 +89,8 @@ def get_list_note_trash(request):
             'deleted_at': note.deleted_at,
             'summary': summary,
             'color': color,
-            'is_shared': is_shared
+            'is_shared': is_shared,
+            'num_of_share': len(share)
         })
     
     return JsonResponse(json_res)
@@ -145,7 +147,8 @@ def get_list_note_by_directory(request):
             'updated_at': note.updated_at,
             'summary': summary,
             'color': color,
-            'is_shared': is_shared
+            'is_shared': is_shared,
+            'num_of_share': len(share)
         })
     
     return JsonResponse(json_res)
@@ -169,6 +172,8 @@ def get_list_note_shared(request):
             summary = full_content[:40]
         else:
             summary = full_content
+        
+        share_tmp = Share.objects.filter(note_id=share.note.id)
 
         color = -1
         json_res['notes'].append({
@@ -178,7 +183,9 @@ def get_list_note_shared(request):
             'created_at': share.note.created_at,
             'updated_at': share.note.updated_at,
             'summary': summary,
-            'color': color
+            'color': color,
+            'is_shared': True,
+            'num_of_share': len(share_tmp)
         })
 
     return JsonResponse(json_res)
