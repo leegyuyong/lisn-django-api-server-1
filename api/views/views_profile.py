@@ -20,6 +20,7 @@ def get_profile_info(request):
     json_res['user_email'] = user.email
     json_res['user_picture_url'] = user.picture_url
     json_res['user_language'] = user.language
+    json_res['user_language_stt'] = user.language_stt
 
     return JsonResponse(json_res)
 
@@ -89,6 +90,16 @@ def get_status(request):
     return JsonResponse(json_res)
 
 @auth_user_id
+def get_language(request):
+    user_id = int(request.GET.get('user_id'))
+    user = User.objects.get(id=user_id)
+
+    json_res = dict()
+    json_res['user_language'] = user.language
+    
+    return JsonResponse(json_res)
+
+@auth_user_id
 def change_language(request):
     coerce_to_post(request)
     user_id = int(request.PUT.get('user_id'))
@@ -101,6 +112,28 @@ def change_language(request):
     es_document = dict()
     es_document['language'] = language
     es.update(index='user', body={'doc':es_document}, id=user.id)
+    
+    return HttpResponse(status=200)
+
+@auth_user_id
+def get_language_stt(request):
+    user_id = int(request.GET.get('user_id'))
+    user = User.objects.get(id=user_id)
+
+    json_res = dict()
+    json_res['user_language_stt'] = user.language_stt
+    
+    return JsonResponse(json_res)
+
+@auth_user_id
+def change_language_stt(request):
+    coerce_to_post(request)
+    user_id = int(request.PUT.get('user_id'))
+    language = request.PUT.get('language')
+    user = User.objects.get(id=user_id)
+
+    user.language_stt = language
+    user.save()
     
     return HttpResponse(status=200)
 
@@ -131,8 +164,23 @@ def api_profile_usage(request):
 @log
 def api_profile_language(request):
     try:
-        if request.method == 'PUT':
+        if request.method == 'GET':
+            return get_language(request)
+        elif request.method == 'PUT':
             return change_language(request)
+        else:
+            return HttpResponse(status=405)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return HttpResponse(status=400)
+
+@log
+def api_profile_language_stt(request):
+    try:
+        if request.method == 'GET':
+            return get_language_stt(request)
+        elif request.method == 'PUT':
+            return change_language_stt(request)
         else:
             return HttpResponse(status=405)
     except:

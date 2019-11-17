@@ -4,7 +4,8 @@ class User(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=320)
     picture_url = models.CharField(max_length=320, null=True)
-    language = models.CharField(max_length=100)
+    language = models.CharField(max_length=100, default='ko-KR')
+    language_stt = models.CharField(max_length=100, default='ko-KR')
 
 class Directory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
