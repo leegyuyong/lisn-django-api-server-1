@@ -12,6 +12,7 @@
 ## Database Table List
 
 **User Table**
+
 |Name  |Type   |Description |
 |------|-------|------------|
 |id    |integer|pk          |
@@ -22,6 +23,7 @@
 |language_stt|char(100)|STT 설정 언어 (디폴트 'ko-KR')|
 
 **Directory Table**
+
 |Name  |Type   |Description |
 |------|-------|------------|
 |id    |integer|pk          |
@@ -30,6 +32,7 @@
 |color |integer|디렉토리 색깔 (디폴트 0 → 회색)|
 
 **Note Table**
+
 |Name  |Type   |Description |
 |------|-------|------------|
 |id    |integer|pk, audio file 이름으로 사용 (id.webm)|
@@ -44,6 +47,7 @@
 |edit_user|integer(NULL)|편집 중인 user id|
 
 **Audio Table**
+
 |Name  |Type   |Description |
 |------|-------|------------|
 |id    |integer|pk          |
@@ -52,6 +56,7 @@
 |length|integer|오디오 길이 (초단위)|
 
 **Sentence Table**
+
 |Name  |Type   |Description |
 |------|-------|------------|
 |id    |integer|pk          |
@@ -63,6 +68,7 @@
 |content|text   |실제 문장 내용    |
 
 **Share Table**
+
 |Name  |Type   |Description |
 |------|-------|------------|
 |id    |integer|pk          |
