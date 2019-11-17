@@ -110,7 +110,6 @@ def make_tutorial(user):
     es_document['user_id'] = audio.user.id
     es_document['content'] = sentence.content
     es.create(index='sentence', body=es_document, id=sentence.id)
-    print('\n4\n')
 
 def get_token(request):
     token = request.POST.get('google_token')
