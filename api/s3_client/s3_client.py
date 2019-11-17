@@ -28,3 +28,14 @@ def create_presigned_url_s3(object_name, expiration=21600):
     except:
         return ''
     return url
+
+def copy_file_to_s3(src_object_name, dest_object_name):
+    bucket = settings.AWS_S3_BUCKET
+    s3_client = boto3.client('s3')
+
+    copy_source = {'Bucket': bucket, 'Key': src_object_name}
+    try:
+        s3_client.copy_object(CopySource=copy_source, Bucket=bucket, Key=dest_object_name)
+    except:
+        return False
+    return True
