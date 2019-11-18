@@ -250,7 +250,7 @@
 {
 	user_id,
 	note_id,
-    directory_id,
+    directory_id, // if there is no directory, then -1
 	title,
 	content,
 	created_at,

@@ -36,7 +36,10 @@ def get_note_info(request):
     json_res = dict()
     json_res['user_id'] = note.user.id
     json_res['note_id'] = note.id
-    json_res['directory_id'] = note.directory.id
+    if note.directory is not None:
+        json_res['directory_id'] = note.directory.id
+    else:
+        json_res['directory_id'] = -1
     json_res['title'] = note.title
     json_res['content'] = note.content
     json_res['created_at'] = note.created_at
