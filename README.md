@@ -250,6 +250,7 @@
 {
 	user_id,
 	note_id,
+    directory_id,
 	title,
 	content,
 	created_at,
