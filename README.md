@@ -251,6 +251,7 @@
 	user_id,
 	note_id,
     directory_id, // if there is no directory, then -1
+    directory_name, // if there is no directory, then 'None'
 	title,
 	content,
 	created_at,
