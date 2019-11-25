@@ -51,7 +51,7 @@ def create_sentence(request):
     es_document['note_id'] = audio.note.id
     es_document['user_id'] = audio.user.id
     es_document['content'] = sentence.content
-    es.create(index='sentence', body=es_document, id=sentence.id)
+    es.update(index='sentence', body={'doc':es_document}, id=sentence.id)
 
     return JsonResponse(json_res, status=201)
 

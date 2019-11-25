@@ -15,7 +15,7 @@ from api.models import User, Note, Audio, Sentence, Directory
 from api.utils import coerce_to_post
 from config.settings import JWT_SECRET_KEY
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
-from api.s3_client.s3_client import copy_file_to_s3
+from api.gcs_client.gcs_client import copy_file_to_gcs
 from api.es_client.es_client import es
 
 CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
@@ -52,7 +52,7 @@ def make_tutorial(user):
         user_id=user.id,
         length=0
     )
-    copy_file_to_s3(settings.AWS_S3_MEDIA_DIR + '0.webm', settings.AWS_S3_MEDIA_DIR + str(audio.id)+'.webm')
+    copy_file_to_gcs('0.webm', str(audio.id)+'.webm')
 
     sentence = Sentence.objects.create(
         index=0,

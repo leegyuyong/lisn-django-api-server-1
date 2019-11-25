@@ -18,16 +18,14 @@ with open(KEY_PATH) as f:
     keys = json.loads(f.read())
 
 # set keys & aws s3 bucket
-if DEBUG == True:
-    SECRET_KEY = 'ksdafja!@#!#asflksjfd^%$%klsnf!@#@#!#'
-    JWT_SECRET_KEY = '123fhksjdnnm.nv.@#$@#$vx.!@#!@#sdv@!#'
-    AWS_S3_BUCKET = 'lisn'
-    AWS_S3_MEDIA_DIR = 'audio-dev1/'
-else:
-    SECRET_KEY = keys['DJANGO_SECRET_KEY']
-    JWT_SECRET_KEY = keys['JWT_SECRET_KEY']
-    AWS_S3_BUCKET = 'lisn'
-    AWS_S3_MEDIA_DIR = 'audio/'
+SECRET_KEY = keys['DJANGO_SECRET_KEY']
+JWT_SECRET_KEY = keys['JWT_SECRET_KEY']
+AWS_S3_BUCKET = 'lisn'
+AWS_S3_MEDIA_DIR = 'audio/'
+
+# set google cloud storage bucket
+GCS_BUCKET = 'lisn'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/home/lisnhelp/.gsutil/LISN-3684977049d0.json'
 
 # set email config
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -67,27 +65,19 @@ INSTALLED_APPS = [
     'api',
 ]
 
-if DEBUG == True:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': keys['DATABASE_NAME'],
+        'USER': keys['DATABASE_USER'],
+        'PASSWORD': keys['DATABASE_PASSWORD'],
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
         }
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': keys['DATABASE_NAME'],
-            'USER': keys['DATABASE_USER'],
-            'PASSWORD': keys['DATABASE_PASSWORD'],
-            'HOST': 'localhost',
-            'PORT': '3306',
-            'OPTIONS': {
-                'init_command': 'SET sql_mode="STRICT_TRANS_TABLES"'
-            }
-        }
-    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

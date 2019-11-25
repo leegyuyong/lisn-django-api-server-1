@@ -7,7 +7,7 @@ from django.conf import settings
 from api.models import User, Note, Audio, Sentence, Share
 from api.utils import coerce_to_post
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id
-from api.s3_client.s3_client import delete_file_to_s3
+from api.gcs_client.gcs_client import delete_file_to_gcs
 from api.es_client.es_client import es
 
 @auth_user_id
@@ -35,7 +35,7 @@ def delete_user(request):
         # delete audio files
         audios = Audio.objects.filter(note_id=note.id)
         for audio in audios:
-            delete_file_to_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
+            delete_file_to_gcs(str(audio.id) + '.webm')
             # elasticsearch document delete
             sentences = Sentence.objects.filter(audio_id=audio.id)
             for sentence in sentences:

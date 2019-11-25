@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from api.models import Note, Audio
-from api.s3_client.s3_client import upload_file_to_s3, create_presigned_url_s3
+from api.gcs_client.gcs_client import upload_file_to_gcs, create_presigned_url_gcs
 from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_id, auth_audio_id_shared
 
 @auth_note_id
@@ -26,7 +26,7 @@ def upload_audio_data(request):
     )
 
     audio_data = request.FILES['audio_data']
-    upload_file_to_s3(audio_data, settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
+    upload_file_to_gcs(audio_data, str(audio.id) + '.webm')
     json_res = dict()
     json_res['audio_id'] = audio.id
     
@@ -39,7 +39,7 @@ def get_audio_data_url(request):
     
     json_res = dict()
     # data_url -> audio_url
-    json_res['audio_url'] = create_presigned_url_s3(settings.AWS_S3_MEDIA_DIR + str(audio.id) + '.webm')
+    json_res['audio_url'] = create_presigned_url_gcs(str(audio.id) + '.webm')
 
     return JsonResponse(json_res)
 
