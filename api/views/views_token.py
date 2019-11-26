@@ -18,7 +18,7 @@ from api.auth import auth_user_id, auth_directory_id, auth_note_id, auth_audio_i
 from api.gcs_client.gcs_client import copy_file_to_gcs
 from api.es_client.es_client import es
 
-CLIENT_ID = '935445294329-t38oc4vmt9l5sokr34h8ueap63dfq4hi.apps.googleusercontent.com'
+CLIENT_ID = '272287263930-mg97c3k8mgulbt4pmap48jgfro7oai49.apps.googleusercontent.com'
 
 def make_tutorial(user):
     directory = Directory.objects.create(
